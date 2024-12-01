@@ -1,0 +1,8 @@
+﻿namespace MegaTrade.Common.Extensions;
+
+public static class NumberExtensions
+{
+    public static bool IsEqualTo(this double number, double another) => Math.Abs(number - another) < double.Epsilon;
+
+    public static bool IsMoreThan(this double number, double another) => number - another > double.Epsilon;
+}

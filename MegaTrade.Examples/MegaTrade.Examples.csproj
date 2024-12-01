@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="TSLab.DataSource">
+      <HintPath>..\Dlls\TSLab.DataSource.dll</HintPath>
+    </Reference>
+    <Reference Include="TSLab.Script">
+      <HintPath>..\Dlls\TSLab.Script.dll</HintPath>
+    </Reference>
+    <Reference Include="TSLab.Script.Handlers">
+      <HintPath>..\Dlls\TSLab.Script.Handlers.dll</HintPath>
+    </Reference>
+    <Reference Include="TSLab.Utility">
+      <HintPath>..\Dlls\TSLab.Utility.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

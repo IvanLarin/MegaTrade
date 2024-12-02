@@ -1,5 +1,6 @@
 ﻿using MegaTrade.Common;
 using MegaTrade.Common.Extensions;
+using MegaTrade.Common.Painting;
 using System.ComponentModel;
 using TSLab.Script;
 using TSLab.Script.Handlers;
@@ -29,6 +30,9 @@ public abstract class SystemBase : IHandler, IContextUses
             if (ShouldExitShort)
                 ExitShortAtMarket();
         }
+
+        if (!Context.IsOptimization)
+            DoDraw();
     }
 
     protected int Now { get; private set; }
@@ -52,6 +56,26 @@ public abstract class SystemBase : IHandler, IContextUses
 
     protected virtual double GetShortExitVolume =>
         Security.LotSize; //TODO каким количеством торговать, если счёт слился?
+
+    private IPaint? _paint;
+
+    protected IPaint Paint => _paint ??= new Paint(Context, Security.Symbol, true);
+
+    protected virtual bool IsBasicTimeframeDraw => true;
+
+    private void DoDraw()
+    {
+        if (IsBasicTimeframeDraw)
+            Paint.Candles(Security, Security.Symbol);
+
+        Draw();
+
+        Paint.Trades(Security);
+    }
+
+    protected virtual void Draw()
+    {
+    }
 
     private bool ShouldEnterLong => //TODO Заменить на свойство
         IsLongTrade && LotsToLongEnter.IsMoreThan(0) && IsLongEnterSignal;

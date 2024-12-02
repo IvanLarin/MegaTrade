@@ -35,6 +35,8 @@ public class TwoMomentums : SystemBase
     public void Execute(ISecurity security, ISecurity smallTimeframe, ISecurity bigTimeframe)
     {
         Setup(security);
+        _smallTimeframe = smallTimeframe;
+        _bigTimeframe = bigTimeframe;
 
         _smallTimeframeClosePrices = smallTimeframe.ClosePrices;
         _bigTimeframeClosePrices = bigTimeframe.ClosePrices;
@@ -58,12 +60,26 @@ public class TwoMomentums : SystemBase
         Run();
     }
 
+    private ISecurity _smallTimeframe = null!;
+    private ISecurity _bigTimeframe = null!;
+
     private IList<double> _smallTimeframeClosePrices = [];
     private IList<double> _bigTimeframeClosePrices = [];
     private IList<double> _smallTimeframeMacd = [];
     private IList<double> _bigTimeframeMacd = [];
     private IList<double> _smallTimeframeRsi = [];
     private IList<double> _bigTimeframeRsi = [];
+
+    protected override bool IsBasicTimeframeDraw => false;
+
+    protected override void Draw()
+    {
+        //TODO сигналы должен рисовать базовый класс
+
+        Paint.Candles(_smallTimeframe, "Меньший таймфрейм");
+        Paint.Candles(_bigTimeframe, "Больший таймфрейм");
+    }
+
 
     [HelperDescription("Малый период MACD меньшего таймфрейма")]
     [HandlerParameter(Name = "SmallMacdOfSmall", IsShown = true, Default = "12", Min = "2", Step = "1")]
@@ -94,7 +110,8 @@ public class TwoMomentums : SystemBase
     public double OverboughtRsiOfBig { get; set; }
 
     [HelperDescription("Перекупленность RSI меньшего тайфрейма")]
-    [HandlerParameter(Name = "OverboughtRsiOfSmall", IsShown = true, Default = "70", Min = "1", Max = "100", Step = "1")]
+    [HandlerParameter(Name = "OverboughtRsiOfSmall", IsShown = true, Default = "70", Min = "1", Max = "100",
+        Step = "1")]
     public double OverboughtRsiOfSmall { get; set; }
 
     [HelperDescription("Перепроданность RSI меньшего тайфрейма")]

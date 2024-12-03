@@ -2,14 +2,18 @@
 
 namespace MegaTrade.Common.Painting;
 
-public class PaintFunctions(IGraphPane graph, IPalette palette) : IPaintFunctions
+public class PaintFunctions : IPaintFunctions
 {
     public void Function(IList<double> values, string name, Color? color = null) =>
-        graph.AddList(
+        Graph.AddList(
             name,
             values,
             ListStyles.LINE,
-            color ?? palette.PopColor(),
+            color ?? Palette.PopColor(),
             LineStyles.SOLID,
             PaneSides.RIGHT);
+
+    public required IPalette Palette { private get; init; }
+
+    public required IGraphPane Graph { private get; init; }
 }

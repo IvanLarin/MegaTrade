@@ -57,30 +57,6 @@ public abstract class SystemBase : IHandler, IContextUses
     protected virtual double GetShortExitVolume =>
         Security.LotSize; //TODO каким количеством торговать, если счёт слился?
 
-    private IPaint? _paint;
-
-    protected IPaint Paint => _paint ??= new Paint(Context, Security.Symbol, new Palette(), true);
-
-    private readonly IPalette _palette = new Palette();
-
-    protected IPaint AddPaint(string name) => new Paint(Context, name, _palette);
-
-    protected virtual bool IsBasicTimeframeDraw => true;
-
-    private void DoDraw()
-    {
-        if (IsBasicTimeframeDraw)
-            Paint.Candles(Security, Security.Symbol);
-
-        Draw();
-
-        Paint.Trades(Security);
-    }
-
-    protected virtual void Draw()
-    {
-    }
-
     private bool ShouldEnterLong =>
         IsLongTrade && LotsToLongEnter.IsMoreThan(0) && IsLongEnterSignal;
 
@@ -165,6 +141,58 @@ public abstract class SystemBase : IHandler, IContextUses
 
     private IPosition? ShortPosition =>
         Security.Positions.GetLastActiveForSignal(ShortEnterName, Now);
+
+    private IPaint? _paint;
+
+    protected IPaint Paint => _paint ??= new Paint
+    {
+        Context = Context,
+        AddToTop = true,
+        GraphName = Security.Symbol,
+        NeutralPalette = new NeutralPalette(),
+        BullPalette = new BullPalette(),
+        BearPalette = new BearPalette()
+    };
+
+    private readonly IPalette _neutralPalette = new NeutralPalette();
+
+    protected IPaint AddPaint(string name) => new Paint
+    {
+        Context = Context,
+        GraphName = name,
+        NeutralPalette = _neutralPalette,
+        BullPalette = new BullPalette(),
+        BearPalette = new BearPalette()
+    };
+
+    protected virtual bool IsBasicTimeframeDraw => true;
+
+    private void DoDraw()
+    {
+        if (IsBasicTimeframeDraw)
+            Paint.Candles(Security, Security.Symbol);
+
+        Draw();
+
+        Paint.Trades(Security);
+    }
+
+    protected IList<T> Select<T>(Func<T> func) where T : struct
+    {
+        List<T> result = Enumerable.Range(0, Context.TradeFromBar).Select(_ => default(T)).ToList();
+
+        for (var i = Context.TradeFromBar; i < Context.BarsCount; i++)
+        {
+            Now = i;
+            result.Add(func());
+        }
+
+        return result;
+    }
+
+    protected virtual void Draw()
+    {
+    }
 
     private IIndicatorFactory? _indicatorFactory;
 

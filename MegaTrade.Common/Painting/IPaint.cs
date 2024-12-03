@@ -1,3 +1,5 @@
 ﻿namespace MegaTrade.Common.Painting;
 
-public interface IPaint : IPaintCandles, IPaintFunctions;
+public interface IPaint : IPaintCandles, IPaintFunctions, IPaintHistogram
+{
+}

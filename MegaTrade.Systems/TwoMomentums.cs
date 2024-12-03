@@ -1,4 +1,5 @@
 ﻿using MegaTrade.Common.Extensions;
+using MegaTrade.Common.Painting;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
@@ -14,23 +15,41 @@ namespace MegaTrade.Systems;
 [OutputsCount(0)]
 public class TwoMomentums : SystemBase
 {
-    protected override bool IsLongEnterSignal => NoLongPosition &&
-                                                 _smallTimeframeMacd[Now - 1] <= 0 &&
-                                                 _smallTimeframeMacd[Now] > 0 &&
-                                                 _bigTimeframeMacd[Now] > 0 &&
-                                                 _bigTimeframeRsi[Now] < OverboughtRsiOfBig &&
-                                                 _smallTimeframeRsi[Now] < OverboughtRsiOfSmall;
+    protected override bool IsLongEnterSignal =>
+        IsBullMacdStart &&
+        !IsRsiOverbought &&
+        NoLongPosition;
 
-    protected override bool IsLongExitSignal => _smallTimeframeMacd[Now] <= 0;
+    private bool IsBullMacdStart =>
+        _smallTimeframeMacd[Now - 1] <= 0 &&
+        _smallTimeframeMacd[Now] > 0 &&
+        _bigTimeframeMacd[Now] > 0;
 
-    protected override bool IsShortEnterSignal => NoShortPosition &&
-                                                  _smallTimeframeMacd[Now - 1] >= 0 &&
-                                                  _smallTimeframeMacd[Now] < 0 &&
-                                                  _bigTimeframeMacd[Now] < 0 &&
-                                                  _bigTimeframeRsi[Now] > OversoldRsiOfBig &&
-                                                  _smallTimeframeRsi[Now] > OversoldRsiOfSmall;
+    private bool IsRsiOverbought =>
+        _bigTimeframeRsi[Now] >= OverboughtRsiOfBig &&
+        _smallTimeframeRsi[Now] >= OverboughtRsiOfSmall;
 
-    protected override bool IsShortExitSignal => _smallTimeframeMacd[Now] >= 0;
+    protected override bool IsLongExitSignal =>
+        _smallTimeframeMacd[Now - 1] > 0 &&
+        _smallTimeframeMacd[Now] <= 0;
+
+    protected override bool IsShortEnterSignal =>
+        IsBearMacdStart &&
+        !IsRsiOversold &&
+        NoShortPosition;
+
+    private bool IsBearMacdStart =>
+        _smallTimeframeMacd[Now - 1] >= 0 &&
+        _smallTimeframeMacd[Now] < 0 &&
+        _bigTimeframeMacd[Now] < 0;
+
+    private bool IsRsiOversold =>
+        _bigTimeframeRsi[Now] <= OversoldRsiOfBig &&
+        _smallTimeframeRsi[Now] <= OversoldRsiOfSmall;
+
+    protected override bool IsShortExitSignal =>
+        _smallTimeframeMacd[Now - 1] < 0 &&
+        _smallTimeframeMacd[Now] >= 0;
 
     public void Execute(ISecurity security, ISecurity smallTimeframe, ISecurity bigTimeframe)
     {
@@ -79,13 +98,18 @@ public class TwoMomentums : SystemBase
         Paint.Candles(_smallTimeframe);
         Paint.Candles(_bigTimeframe);
 
-        var macdPaint = AddPaint("MACD");
-        macdPaint.Function(_smallTimeframeMacd, "MACD меньшего таймфрейма");
-        macdPaint.Function(_bigTimeframeMacd, "MACD большего таймфрейма");
+        var paintMacd = AddPaint("MACD");
+        paintMacd.Function(_smallTimeframeMacd, "MACD меньшего таймфрейма");
+        paintMacd.Function(_bigTimeframeMacd, "MACD большего таймфрейма");
+
+        paintMacd.Signal(Select(() => IsBullMacdStart),
+            "Бычий разворот меньшего таймрейма в направлении большего таймрейма", AnimalColor.Bull);
+        paintMacd.Signal(Select(() => IsLongExitSignal), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
 
         var rsiPaint = AddPaint("RSI");
         rsiPaint.Function(_smallTimeframeRsi, "RSI меньшего таймфрейма");
         rsiPaint.Function(_bigTimeframeRsi, "RSI большего таймфрейма");
+        rsiPaint.Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear);
     }
 
 

@@ -172,6 +172,18 @@ public abstract class SystemBase : IHandler, IContextUses
         if (IsBasicTimeframeDraw)
             Paint.Candles(Security, Security.Symbol);
 
+        if (IsLongTrade)
+        {
+            Paint.Signal(Select(() => IsLongEnterSignal), "Сигнал на вход в лонг", AnimalColor.Bull);
+            Paint.Signal(Select(() => IsLongExitSignal), "Сигнал на выход из лонга", AnimalColor.Bear);
+        }
+
+        if (IsShortTrade)
+        {
+            Paint.Signal(Select(() => IsShortEnterSignal), "Сигнал на вход в шорт", AnimalColor.Bull);
+            Paint.Signal(Select(() => IsShortExitSignal), "Сигнал на выход из шорта", AnimalColor.Bear);
+        }
+
         Draw();
 
         Paint.Trades(Security);

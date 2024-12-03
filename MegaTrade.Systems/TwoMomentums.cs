@@ -110,6 +110,7 @@ public class TwoMomentums : SystemBase
         rsiPaint.Function(_smallTimeframeRsi, "RSI меньшего таймфрейма");
         rsiPaint.Function(_bigTimeframeRsi, "RSI большего таймфрейма");
         rsiPaint.Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear);
+        rsiPaint.Signal(Select(() => IsRsiOversold), "Перепроданность", AnimalColor.Bear);
     }
 
 

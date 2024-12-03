@@ -78,6 +78,14 @@ public class TwoMomentums : SystemBase
 
         Paint.Candles(_smallTimeframe, "Меньший таймфрейм");
         Paint.Candles(_bigTimeframe, "Больший таймфрейм");
+
+        var macdPaint = AddPaint("MACD");
+        macdPaint.Function(_smallTimeframeMacd, "MACD меньшего таймфрейма");
+        macdPaint.Function(_bigTimeframeMacd, "MACD большего таймфрейма");
+
+        var rsiPaint = AddPaint("RSI");
+        rsiPaint.Function(_smallTimeframeRsi, "RSI меньшего таймфрейма");
+        rsiPaint.Function(_bigTimeframeRsi, "RSI большего таймфрейма");
     }
 
 

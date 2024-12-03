@@ -59,7 +59,11 @@ public abstract class SystemBase : IHandler, IContextUses
 
     private IPaint? _paint;
 
-    protected IPaint Paint => _paint ??= new Paint(Context, Security.Symbol, true);
+    protected IPaint Paint => _paint ??= new Paint(Context, Security.Symbol, new Palette(), true);
+
+    private readonly IPalette _palette = new Palette();
+
+    protected IPaint AddPaint(string name) => new Paint(Context, name, _palette);
 
     protected virtual bool IsBasicTimeframeDraw => true;
 
@@ -77,7 +81,7 @@ public abstract class SystemBase : IHandler, IContextUses
     {
     }
 
-    private bool ShouldEnterLong => //TODO Заменить на свойство
+    private bool ShouldEnterLong =>
         IsLongTrade && LotsToLongEnter.IsMoreThan(0) && IsLongEnterSignal;
 
     private bool ShouldEnterShort =>
@@ -203,6 +207,6 @@ public abstract class SystemBase : IHandler, IContextUses
     public bool IsLongTrade { get; set; }
 
     [Description("Открывать ли короткие позиции")]
-    [HandlerParameter(true, "false")]
+    [HandlerParameter(true, "true")]
     public bool IsShortTrade { get; set; }
 }

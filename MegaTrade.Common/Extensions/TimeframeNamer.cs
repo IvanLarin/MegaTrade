@@ -5,12 +5,9 @@ namespace MegaTrade.Common.Extensions;
 
 internal class TimeframeNamer(ISecurity security)
 {
-    public string GetName() => security.Symbol + " " + (
-        security.IntervalBase == DataIntervals.MINUTE
-            ? GetTimeframeName()
-            : FallbackName);
+    public string GetName() => security.Symbol + " " + TimeframeName;
 
-    private string GetTimeframeName() =>
+    private string TimeframeName =>
         security.IntervalBase == DataIntervals.MINUTE
             ? MonthName ??
               WeekName ??

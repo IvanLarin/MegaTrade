@@ -19,7 +19,7 @@ public class Paint : IPaint
         _paintLines = new PaintFunctions(graph, palette);
     }
 
-    public void Candles(ISecurity security, string name) => _paintCandles.Candles(security, name);
+    public void Candles(ISecurity security, string? name = null) => _paintCandles.Candles(security, name);
 
     public void Trades(ISecurity security) => _paintCandles.Trades(security);
 

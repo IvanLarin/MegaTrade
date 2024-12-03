@@ -1,4 +1,5 @@
-﻿using TSLab.Script;
+﻿using MegaTrade.Common.Extensions;
+using TSLab.Script;
 
 namespace MegaTrade.Common.Painting;
 
@@ -16,7 +17,8 @@ internal class PaintCandles : IPaintCandles
         _colors.Enqueue((-12419072, -8388608, 200));
     }
 
-    public void Candles(ISecurity security, string name) => DrawCandles(security, name, false, _colors.Dequeue());
+    public void Candles(ISecurity security, string? name = null) =>
+        DrawCandles(security, name ?? security.GetTimeframeName(), false, _colors.Dequeue());
 
     public void Trades(ISecurity security) => DrawCandles(security, security.Symbol, true, (0, 0, 99999));
 

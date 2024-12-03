@@ -166,9 +166,9 @@ public abstract class SystemBase : IHandler, IContextUses
     private IPosition? ShortPosition =>
         Security.Positions.GetLastActiveForSignal(ShortEnterName, Now);
 
-    private IndicatorFactory? _indicatorFactory;
+    private IIndicatorFactory? _indicatorFactory;
 
-    protected IndicatorFactory IndicatorFactory => _indicatorFactory ??= new TheIndicatorFactory(Context);
+    protected IIndicatorFactory IIndicatorFactory => _indicatorFactory ??= new IndicatorFactory(Context);
 
     private IContext? _context;
 

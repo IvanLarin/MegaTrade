@@ -41,19 +41,19 @@ public class TwoMomentums : SystemBase
         _smallTimeframeClosePrices = smallTimeframe.ClosePrices;
         _bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
-        _smallTimeframeMacd = IndicatorFactory
+        _smallTimeframeMacd = IIndicatorFactory
             .MakeMacd(_smallTimeframeClosePrices, SmallMacdOfSmall, BigMacdOfSmall)
             .DecompressBy(smallTimeframe);
 
-        _bigTimeframeMacd = IndicatorFactory
+        _bigTimeframeMacd = IIndicatorFactory
             .MakeMacd(_bigTimeframeClosePrices, SmallMacdOfBig, BigMacdOfBig)
             .DecompressBy(bigTimeframe);
 
-        _smallTimeframeRsi = IndicatorFactory
+        _smallTimeframeRsi = IIndicatorFactory
             .MakeRsi(_smallTimeframeClosePrices, RsiPeriodOfSmall)
             .DecompressBy(smallTimeframe);
 
-        _bigTimeframeRsi = IndicatorFactory
+        _bigTimeframeRsi = IIndicatorFactory
             .MakeRsi(_bigTimeframeClosePrices, RsiPeriodOfBig)
             .DecompressBy(bigTimeframe);
 
@@ -76,8 +76,8 @@ public class TwoMomentums : SystemBase
     {
         //TODO сигналы должен рисовать базовый класс
 
-        Paint.Candles(_smallTimeframe, "Меньший таймфрейм");
-        Paint.Candles(_bigTimeframe, "Больший таймфрейм");
+        Paint.Candles(_smallTimeframe);
+        Paint.Candles(_bigTimeframe);
 
         var macdPaint = AddPaint("MACD");
         macdPaint.Function(_smallTimeframeMacd, "MACD меньшего таймфрейма");

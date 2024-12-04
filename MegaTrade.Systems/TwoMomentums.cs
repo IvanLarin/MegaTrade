@@ -114,14 +114,14 @@ public class TwoMomentums : SystemBase
         .Signal(Select(() => IsLongExitSignal), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
 
     private void DrawRsi() => AddPaint("RSI")
-        .Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear, out var oversoldRsiColor)
-        .Signal(Select(() => IsRsiOversold), "Перепроданность", oversoldRsiColor)
         .Function(_smallTimeframeRsi, "RSI меньшего таймфрейма", out var smallRsiColor)
         .Signal(Select(() => IsSmallRsiOverbought), "Перекупленность меньшего таймфрейма", smallRsiColor)
         .Signal(Select(() => IsSmallRsiOversold), "Перепроданность меньшего таймфрейма", smallRsiColor)
         .Function(_bigTimeframeRsi, "RSI большего таймфрейма", out var bigRsiColor)
         .Signal(Select(() => IsBigRsiOverbought), "Перекупленность большего таймфрейма", bigRsiColor)
-        .Signal(Select(() => IsBigRsiOversold), "Перепроданность большего таймфрейма", bigRsiColor);
+        .Signal(Select(() => IsBigRsiOversold), "Перепроданность большего таймфрейма", bigRsiColor)
+        .Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear)
+        .Signal(Select(() => IsRsiOversold), "Перепроданность", AnimalColor.Bear);
 
     [HelperDescription("Малый период MACD меньшего таймфрейма")]
     [HandlerParameter(Name = "SmallMacdOfSmall", IsShown = true, Default = "12", Min = "2", Step = "1")]

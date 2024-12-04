@@ -6,25 +6,49 @@ public class PaintHistogram : IPaintHistogram
 {
     private const int SignalOpacity = 150;
 
-    public void Histogram(IList<bool> values, string name, AnimalColor animalColor = AnimalColor.Neutral) =>
-        DrawHistogram(values, name, ChooseAnimalPalette(animalColor).PopColor());
+    public void Histogram(IList<bool> values, string name) =>
+        DrawHistogram(values, name, NeutralPalette.PopColor(), out var usedColor);
+
+    public void Histogram(IList<bool> values, string name, out Color usedColor) =>
+        DrawHistogram(values, name, NeutralPalette.PopColor(), out usedColor);
+
+    public void Histogram(IList<bool> values, string name, AnimalColor animalColor) =>
+        DrawHistogram(values, name, ChooseAnimalPalette(animalColor).PopColor(), out var usedColor);
+
+    public void Histogram(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor) =>
+        DrawHistogram(values, name, ChooseAnimalPalette(animalColor).PopColor(), out usedColor);
 
     public void Histogram(IList<bool> values, string name, Color color) =>
-        DrawHistogram(values, name, color);
+        DrawHistogram(values, name, color, out var usedColor);
 
-    public void Signal(IList<bool> values, string name, AnimalColor animalColor = AnimalColor.Neutral) =>
-        DrawHistogram(values, name, ChooseAnimalPalette(animalColor).PopColor(), SignalOpacity);
+    public void Histogram(IList<bool> values, string name, Color color, out Color usedColor) =>
+        DrawHistogram(values, name, color, out usedColor);
+
+    public void Signal(IList<bool> values, string name) =>
+        DrawHistogram(values, name, NeutralPalette.PopColor(), out var usedColor, SignalOpacity);
+
+    public void Signal(IList<bool> values, string name, out Color usedColor) =>
+        DrawHistogram(values, name, NeutralPalette.PopColor(), out usedColor, SignalOpacity);
+
+    public void Signal(IList<bool> values, string name, AnimalColor animalColor) =>
+        DrawHistogram(values, name, ChooseAnimalPalette(animalColor).PopColor(), out var usedColor, SignalOpacity);
+
+    public void Signal(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor) =>
+        DrawHistogram(values, name, ChooseAnimalPalette(animalColor).PopColor(), out usedColor, SignalOpacity);
 
     public void Signal(IList<bool> values, string name, Color color) =>
-        DrawHistogram(values, name, color, SignalOpacity);
+        DrawHistogram(values, name, color, out var usedColor, SignalOpacity);
 
-    private void DrawHistogram(IList<bool> values, string name, Color color, int opacity = 0)
+    public void Signal(IList<bool> values, string name, Color color, out Color usedColor) =>
+        DrawHistogram(values, name, color, out usedColor, SignalOpacity);
+
+    private void DrawHistogram(IList<bool> values, string name, Color colorToDraw, out Color usedColor, int opacity = 0)
     {
         var chart = Graph.AddList(
             name,
             values,
             ListStyles.HISTOHRAM,
-            color,
+            usedColor = colorToDraw,
             LineStyles.SOLID,
             PaneSides.LEFT);
 

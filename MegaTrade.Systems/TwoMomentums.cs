@@ -20,15 +20,6 @@ public class TwoMomentums : SystemBase
         !IsRsiOverbought &&
         NoLongPosition;
 
-    private bool IsBullMacdStart =>
-        _smallTimeframeMacd[Now - 1] <= 0 &&
-        _smallTimeframeMacd[Now] > 0 &&
-        _bigTimeframeMacd[Now] > 0;
-
-    private bool IsRsiOverbought =>
-        _bigTimeframeRsi[Now] >= OverboughtRsiOfBig &&
-        _smallTimeframeRsi[Now] >= OverboughtRsiOfSmall;
-
     protected override bool IsLongExitSignal =>
         _smallTimeframeMacd[Now - 1] > 0 &&
         _smallTimeframeMacd[Now] <= 0;
@@ -38,18 +29,33 @@ public class TwoMomentums : SystemBase
         !IsRsiOversold &&
         NoShortPosition;
 
+    protected override bool IsShortExitSignal =>
+        _smallTimeframeMacd[Now - 1] < 0 &&
+        _smallTimeframeMacd[Now] >= 0;
+
+    private bool IsBullMacdStart =>
+        _smallTimeframeMacd[Now - 1] <= 0 &&
+        _smallTimeframeMacd[Now] > 0 &&
+        _bigTimeframeMacd[Now] > 0;
+
+    private bool IsRsiOverbought => IsBigRsiOverbought ||
+                                    IsSmallRsiOverbought;
+
+    private bool IsBigRsiOverbought => _bigTimeframeRsi[Now] >= OverboughtRsiOfBig;
+
+    private bool IsSmallRsiOverbought => _smallTimeframeRsi[Now] >= OverboughtRsiOfSmall;
+
     private bool IsBearMacdStart =>
         _smallTimeframeMacd[Now - 1] >= 0 &&
         _smallTimeframeMacd[Now] < 0 &&
         _bigTimeframeMacd[Now] < 0;
 
-    private bool IsRsiOversold =>
-        _bigTimeframeRsi[Now] <= OversoldRsiOfBig &&
-        _smallTimeframeRsi[Now] <= OversoldRsiOfSmall;
+    private bool IsRsiOversold => IsBigRsiOversold ||
+                                  IsSmallRsiOversold;
 
-    protected override bool IsShortExitSignal =>
-        _smallTimeframeMacd[Now - 1] < 0 &&
-        _smallTimeframeMacd[Now] >= 0;
+    private bool IsBigRsiOversold => _bigTimeframeRsi[Now] <= OversoldRsiOfBig;
+
+    private bool IsSmallRsiOversold => _smallTimeframeRsi[Now] <= OversoldRsiOfSmall;
 
     public void Execute(ISecurity security, ISecurity smallTimeframe, ISecurity bigTimeframe)
     {
@@ -93,11 +99,15 @@ public class TwoMomentums : SystemBase
 
     protected override void Draw()
     {
-        //TODO сигналы должен рисовать базовый класс
-
         Paint.Candles(_smallTimeframe);
         Paint.Candles(_bigTimeframe);
 
+        DrawMacd();
+        DrawRsi();
+    }
+
+    private void DrawMacd()
+    {
         var paintMacd = AddPaint("MACD");
         paintMacd.Function(_smallTimeframeMacd, "MACD меньшего таймфрейма");
         paintMacd.Function(_bigTimeframeMacd, "MACD большего таймфрейма");
@@ -105,14 +115,22 @@ public class TwoMomentums : SystemBase
         paintMacd.Signal(Select(() => IsBullMacdStart),
             "Бычий разворот меньшего таймрейма в направлении большего таймрейма", AnimalColor.Bull);
         paintMacd.Signal(Select(() => IsLongExitSignal), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
-
-        var rsiPaint = AddPaint("RSI");
-        rsiPaint.Function(_smallTimeframeRsi, "RSI меньшего таймфрейма");
-        rsiPaint.Function(_bigTimeframeRsi, "RSI большего таймфрейма");
-        rsiPaint.Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear);
-        rsiPaint.Signal(Select(() => IsRsiOversold), "Перепроданность", AnimalColor.Bear);
     }
 
+    private void DrawRsi()
+    {
+        var rsiPaint = AddPaint("RSI");
+        rsiPaint.Function(_smallTimeframeRsi, "RSI меньшего таймфрейма", out var smallRsiColor);
+        rsiPaint.Signal(Select(() => IsSmallRsiOverbought), "Перекупленность меньшего таймфрейма", smallRsiColor);
+        rsiPaint.Signal(Select(() => IsSmallRsiOversold), "Перепроданность меньшего таймфрейма", smallRsiColor);
+
+        rsiPaint.Function(_bigTimeframeRsi, "RSI большего таймфрейма", out var bigRsiColor);
+        rsiPaint.Signal(Select(() => IsBigRsiOverbought), "Перекупленность большего таймфрейма", bigRsiColor);
+        rsiPaint.Signal(Select(() => IsBigRsiOversold), "Перепроданность большего таймфрейма", bigRsiColor);
+
+        rsiPaint.Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear, out var oversoldRsiColor);
+        rsiPaint.Signal(Select(() => IsRsiOversold), "Перепроданность", oversoldRsiColor);
+    }
 
     [HelperDescription("Малый период MACD меньшего таймфрейма")]
     [HandlerParameter(Name = "SmallMacdOfSmall", IsShown = true, Default = "12", Min = "2", Step = "1")]

@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-public interface IPaintHistogram
+internal interface IPaintHistograms
 {
     void Histogram(IList<bool> values, string name);
 

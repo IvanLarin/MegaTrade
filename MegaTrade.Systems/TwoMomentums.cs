@@ -107,6 +107,7 @@ public class TwoMomentums : SystemBase
     }
 
     private void DrawMacd() => AddPaint("MACD")
+        .Level(0, "Ноль", ScriptColors.White)
         .Function(_smallTimeframeMacd, "MACD меньшего таймфрейма")
         .Function(_bigTimeframeMacd, "MACD большего таймфрейма")
         .Signal(Select(() => IsBullMacdStart),
@@ -115,9 +116,13 @@ public class TwoMomentums : SystemBase
 
     private void DrawRsi() => AddPaint("RSI")
         .Function(_smallTimeframeRsi, "RSI меньшего таймфрейма", out var smallRsiColor)
+        .Level(OverboughtRsiOfSmall, "Уровень перекупленности меньшего таймфрейма", smallRsiColor)
+        .Level(OversoldRsiOfSmall, "Уровень перепроданности меньшего таймфрейма", smallRsiColor)
         .Signal(Select(() => IsSmallRsiOverbought), "Перекупленность меньшего таймфрейма", smallRsiColor)
         .Signal(Select(() => IsSmallRsiOversold), "Перепроданность меньшего таймфрейма", smallRsiColor)
         .Function(_bigTimeframeRsi, "RSI большего таймфрейма", out var bigRsiColor)
+        .Level(OverboughtRsiOfBig, "Уровень перекупленности большего таймфрейма", bigRsiColor)
+        .Level(OversoldRsiOfBig, "Уровень перепроданности большего таймфрейма", bigRsiColor)
         .Signal(Select(() => IsBigRsiOverbought), "Перекупленность большего таймфрейма", bigRsiColor)
         .Signal(Select(() => IsBigRsiOversold), "Перепроданность большего таймфрейма", bigRsiColor)
         .Signal(Select(() => IsRsiOverbought), "Перекупленность", AnimalColor.Bear)

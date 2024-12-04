@@ -35,4 +35,8 @@ public interface IPaint
     IPaint Signal(IList<bool> values, string name, Color color);
 
     IPaint Signal(IList<bool> values, string name, Color color, out Color usedColor);
+
+    IPaint Level(double value, string name, Color color);
+
+    IPaint Level(double value, string name, Color color, out Color usedColor);
 }

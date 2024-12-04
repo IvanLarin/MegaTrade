@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-public class PaintHistogram : IPaintHistogram
+internal class PaintHistograms : IPaintHistograms
 {
     private const int SignalOpacity = 150;
 

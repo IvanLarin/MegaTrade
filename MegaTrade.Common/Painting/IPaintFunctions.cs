@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-public interface IPaintFunctions
+internal interface IPaintFunctions
 {
     void Function(IList<double> values, string name, Color? color = null);
 

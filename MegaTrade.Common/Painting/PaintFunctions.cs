@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-public class PaintFunctions : IPaintFunctions
+internal class PaintFunctions : IPaintFunctions
 {
     public void Function(IList<double> values, string name, Color? color = null) =>
         DrawFunction(values, name, out var usedColor, color);

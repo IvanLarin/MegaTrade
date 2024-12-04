@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-public interface IPaintCandles
+internal interface IPaintCandles
 {
     void Candles(ISecurity security, string? name = null);
 

@@ -5,51 +5,102 @@ namespace MegaTrade.Common.Painting;
 
 public class Paint : IPaint
 {
-    public void Candles(ISecurity security, string? name = null) => PaintCandles.Candles(security, name);
+    public IPaint Candles(ISecurity security, string? name = null)
+    {
+        PaintCandles.Candles(security, name);
+        return this;
+    }
 
-    public void Trades(ISecurity security) => PaintCandles.Trades(security);
+    public IPaint Trades(ISecurity security)
+    {
+        PaintCandles.Trades(security);
+        return this;
+    }
 
-    public void Function(IList<double> values, string name, Color? color = null) =>
+    public IPaint Function(IList<double> values, string name, Color? color = null)
+    {
         PaintFunctions.Function(values, name, color);
+        return this;
+    }
 
-    public void Function(IList<double> values, string name, out Color usedColor) =>
+    public IPaint Function(IList<double> values, string name, out Color usedColor)
+    {
         PaintFunctions.Function(values, name, out usedColor);
+        return this;
+    }
 
-    public void Histogram(IList<bool> values, string name) =>
+    public IPaint Histogram(IList<bool> values, string name)
+    {
         PaintHistogram.Histogram(values, name);
+        return this;
+    }
 
-    public void Histogram(IList<bool> values, string name, out Color usedColor) =>
+    public IPaint Histogram(IList<bool> values, string name, out Color usedColor)
+
+    {
         PaintHistogram.Histogram(values, name, out usedColor);
+        return this;
+    }
 
-    public void Histogram(IList<bool> values, string name, AnimalColor animalColor) =>
+    public IPaint Histogram(IList<bool> values, string name, AnimalColor animalColor)
+    {
         PaintHistogram.Histogram(values, name, animalColor);
+        return this;
+    }
 
-    public void Histogram(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor) =>
+    public IPaint Histogram(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor)
+    {
         PaintHistogram.Histogram(values, name, animalColor, out usedColor);
+        return this;
+    }
 
-    public void Histogram(IList<bool> values, string name, Color color) =>
+    public IPaint Histogram(IList<bool> values, string name, Color color)
+    {
         PaintHistogram.Histogram(values, name);
+        return this;
+    }
 
-    public void Histogram(IList<bool> values, string name, Color color, out Color usedColor) =>
+    public IPaint Histogram(IList<bool> values, string name, Color color, out Color usedColor)
+    {
         PaintHistogram.Histogram(values, name, out usedColor);
+        return this;
+    }
 
-    public void Signal(IList<bool> values, string name) =>
+    public IPaint Signal(IList<bool> values, string name)
+    {
         PaintHistogram.Signal(values, name);
+        return this;
+    }
 
-    public void Signal(IList<bool> values, string name, out Color usedColor) =>
+    public IPaint Signal(IList<bool> values, string name, out Color usedColor)
+    {
         PaintHistogram.Signal(values, name, out usedColor);
+        return this;
+    }
 
-    public void Signal(IList<bool> values, string name, AnimalColor animalColor) =>
+    public IPaint Signal(IList<bool> values, string name, AnimalColor animalColor)
+    {
         PaintHistogram.Signal(values, name, animalColor);
+        return this;
+    }
 
-    public void Signal(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor) =>
+    public IPaint Signal(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor)
+    {
         PaintHistogram.Signal(values, name, animalColor, out usedColor);
+        return this;
+    }
 
-    public void Signal(IList<bool> values, string name, Color color) =>
+    public IPaint Signal(IList<bool> values, string name, Color color)
+    {
         PaintHistogram.Signal(values, name, color);
+        return this;
+    }
 
-    public void Signal(IList<bool> values, string name, Color color, out Color usedColor) =>
+    public IPaint Signal(IList<bool> values, string name, Color color, out Color usedColor)
+    {
         PaintHistogram.Signal(values, name, color, out usedColor);
+        return this;
+    }
 
     private IGraphPane? _graph;
 

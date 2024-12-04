@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-internal class PaintSignals : IPaintSignals
+internal class PaintSignals : PaintBase, IPaintSignals
 {
     private const int SignalOpacity = 150;
 
@@ -37,16 +37,4 @@ internal class PaintSignals : IPaintSignals
         chart.Opacity = SignalOpacity;
         chart.Autoscaling = true;
     }
-
-    private IPalette ChooseAnimalPalette(AnimalColor animalColor) =>
-        animalColor == AnimalColor.Bull ? BullPalette :
-        animalColor == AnimalColor.Bear ? BearPalette : NeutralPalette;
-
-    public required IPalette BullPalette { private get; init; }
-
-    public required IPalette BearPalette { private get; init; }
-
-    public required IPalette NeutralPalette { private get; init; }
-
-    public required IGraphPane Graph { private get; init; }
 }

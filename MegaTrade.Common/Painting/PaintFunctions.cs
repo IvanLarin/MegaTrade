@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-internal class PaintFunctions : IPaintFunctions
+internal class PaintFunctions : PaintBase, IPaintFunctions
 {
     public void Function(IList<double> values, string name) =>
         DrawFunction(values, name, NeutralPalette.PopColor(), out var usedColor);
@@ -30,16 +30,4 @@ internal class PaintFunctions : IPaintFunctions
             usedColor = colorToDraw,
             LineStyles.SOLID,
             PaneSides.RIGHT);
-
-    private IPalette ChooseAnimalPalette(AnimalColor animalColor) =>
-        animalColor == AnimalColor.Bull ? BullPalette :
-        animalColor == AnimalColor.Bear ? BearPalette : NeutralPalette;
-
-    public required IPalette BullPalette { private get; init; }
-
-    public required IPalette BearPalette { private get; init; }
-
-    public required IPalette NeutralPalette { private get; init; }
-
-    public required IGraphPane Graph { private get; init; }
 }

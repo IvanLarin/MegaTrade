@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Common.Painting;
 
-internal class PaintHistograms : IPaintHistograms
+internal class PaintHistograms : PaintBase, IPaintHistograms
 {
     public void Histogram(IList<double> values, string name) =>
         DrawHistogram(values, name, NeutralPalette.PopColor(), out var usedColor);
@@ -33,16 +33,4 @@ internal class PaintHistograms : IPaintHistograms
             PaneSides.LEFT);
         chart.Autoscaling = true;
     }
-
-    private IPalette ChooseAnimalPalette(AnimalColor animalColor) =>
-        animalColor == AnimalColor.Bull ? BullPalette :
-        animalColor == AnimalColor.Bear ? BearPalette : NeutralPalette;
-
-    public required IPalette BullPalette { private get; init; }
-
-    public required IPalette BearPalette { private get; init; }
-
-    public required IPalette NeutralPalette { private get; init; }
-
-    public required IGraphPane Graph { private get; init; }
 }

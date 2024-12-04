@@ -3,7 +3,7 @@ using TSLab.Script.Handlers;
 
 namespace MegaTrade.Common.Painting;
 
-internal class PaintLevels : IPaintLevels
+internal class PaintLevels : PaintBase, IPaintLevels
 {
     private const int Opacity = 90;
 
@@ -32,18 +32,5 @@ internal class PaintLevels : IPaintLevels
         chart.Opacity = Opacity;
         Graph.UpdatePrecision(PaneSides.RIGHT, 2);
     }
-
-    private IPalette ChooseAnimalPalette(AnimalColor animalColor) =>
-        animalColor == AnimalColor.Bull ? BullPalette :
-        animalColor == AnimalColor.Bear ? BearPalette : NeutralPalette;
-
-    public required IPalette BullPalette { private get; init; }
-
-    public required IPalette BearPalette { private get; init; }
-
-    public required IPalette NeutralPalette { private get; init; }
-
-    public required IGraphPane Graph { private get; init; }
-
     public required IContext Context { private get; init; }
 }

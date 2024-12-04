@@ -29,38 +29,38 @@ public class Paint : IPaint
         return this;
     }
 
-    public IPaint Histogram(IList<bool> values, string name)
+    public IPaint Histogram(IList<double> values, string name)
     {
         PaintHistograms.Histogram(values, name);
         return this;
     }
 
-    public IPaint Histogram(IList<bool> values, string name, out Color usedColor)
+    public IPaint Histogram(IList<double> values, string name, out Color usedColor)
 
     {
         PaintHistograms.Histogram(values, name, out usedColor);
         return this;
     }
 
-    public IPaint Histogram(IList<bool> values, string name, AnimalColor animalColor)
+    public IPaint Histogram(IList<double> values, string name, AnimalColor animalColor)
     {
         PaintHistograms.Histogram(values, name, animalColor);
         return this;
     }
 
-    public IPaint Histogram(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor)
+    public IPaint Histogram(IList<double> values, string name, AnimalColor animalColor, out Color usedColor)
     {
         PaintHistograms.Histogram(values, name, animalColor, out usedColor);
         return this;
     }
 
-    public IPaint Histogram(IList<bool> values, string name, Color color)
+    public IPaint Histogram(IList<double> values, string name, Color color)
     {
         PaintHistograms.Histogram(values, name);
         return this;
     }
 
-    public IPaint Histogram(IList<bool> values, string name, Color color, out Color usedColor)
+    public IPaint Histogram(IList<double> values, string name, Color color, out Color usedColor)
     {
         PaintHistograms.Histogram(values, name, out usedColor);
         return this;
@@ -68,37 +68,37 @@ public class Paint : IPaint
 
     public IPaint Signal(IList<bool> values, string name)
     {
-        PaintHistograms.Signal(values, name);
+        PaintSignals.Signal(values, name);
         return this;
     }
 
     public IPaint Signal(IList<bool> values, string name, out Color usedColor)
     {
-        PaintHistograms.Signal(values, name, out usedColor);
+        PaintSignals.Signal(values, name, out usedColor);
         return this;
     }
 
     public IPaint Signal(IList<bool> values, string name, AnimalColor animalColor)
     {
-        PaintHistograms.Signal(values, name, animalColor);
+        PaintSignals.Signal(values, name, animalColor);
         return this;
     }
 
     public IPaint Signal(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor)
     {
-        PaintHistograms.Signal(values, name, animalColor, out usedColor);
+        PaintSignals.Signal(values, name, animalColor, out usedColor);
         return this;
     }
 
     public IPaint Signal(IList<bool> values, string name, Color color)
     {
-        PaintHistograms.Signal(values, name, color);
+        PaintSignals.Signal(values, name, color);
         return this;
     }
 
     public IPaint Signal(IList<bool> values, string name, Color color, out Color usedColor)
     {
-        PaintHistograms.Signal(values, name, color, out usedColor);
+        PaintSignals.Signal(values, name, color, out usedColor);
         return this;
     }
 
@@ -140,10 +140,21 @@ public class Paint : IPaint
     private IPaintFunctions PaintFunctions =>
         _paintFunctions ??= new PaintFunctions { Graph = Graph, Palette = NeutralPalette };
 
-    private IPaintHistograms? _paintHistogram;
+    private IPaintSignals? _paintSignals;
+
+    private IPaintSignals PaintSignals =>
+        _paintSignals ??= new PaintSignals
+        {
+            Graph = Graph,
+            BullPalette = BullPalette,
+            BearPalette = BearPalette,
+            NeutralPalette = NeutralPalette
+        };
+
+    private IPaintHistograms? _paintHistograms;
 
     private IPaintHistograms PaintHistograms =>
-        _paintHistogram ??= new PaintHistograms
+        _paintHistograms ??= new PaintHistograms
         {
             Graph = Graph,
             BullPalette = BullPalette,

@@ -4,27 +4,15 @@ namespace MegaTrade.Common.Painting;
 
 internal interface IPaintHistograms
 {
-    void Histogram(IList<bool> values, string name);
+    void Histogram(IList<double> values, string name);
 
-    void Histogram(IList<bool> values, string name, out Color usedColor);
+    void Histogram(IList<double> values, string name, out Color usedColor);
 
-    void Histogram(IList<bool> values, string name, AnimalColor animalColor);
+    void Histogram(IList<double> values, string name, AnimalColor animalColor);
 
-    void Histogram(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor);
+    void Histogram(IList<double> values, string name, AnimalColor animalColor, out Color usedColor);
 
-    void Histogram(IList<bool> values, string name, Color color);
+    void Histogram(IList<double> values, string name, Color color);
 
-    void Histogram(IList<bool> values, string name, Color color, out Color usedColor);
-
-    void Signal(IList<bool> values, string name);
-
-    void Signal(IList<bool> values, string name, out Color usedColor);
-
-    void Signal(IList<bool> values, string name, AnimalColor animalColor);
-
-    void Signal(IList<bool> values, string name, AnimalColor animalColor, out Color usedColor);
-
-    void Signal(IList<bool> values, string name, Color color);
-
-    void Signal(IList<bool> values, string name, Color color, out Color usedColor);
+    void Histogram(IList<double> values, string name, Color color, out Color usedColor);
 }

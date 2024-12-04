@@ -17,15 +17,43 @@ public class Paint : IPaint
         return this;
     }
 
-    public IPaint Function(IList<double> values, string name, Color? color = null)
+    public IPaint Function(IList<double> values, string name)
     {
-        PaintFunctions.Function(values, name, color);
+        PaintFunctions.Function(values, name);
         return this;
     }
 
     public IPaint Function(IList<double> values, string name, out Color usedColor)
     {
         PaintFunctions.Function(values, name, out usedColor);
+        return this;
+    }
+
+    public IPaint Function(IList<double> values, string name, AnimalColor animalColor)
+
+    {
+        PaintFunctions.Function(values, name, animalColor);
+        return this;
+    }
+
+    public IPaint Function(IList<double> values, string name, AnimalColor animalColor, out Color usedColor)
+
+    {
+        PaintFunctions.Function(values, name, animalColor, out usedColor);
+        return this;
+    }
+
+    public IPaint Function(IList<double> values, string name, Color color)
+
+    {
+        PaintFunctions.Function(values, name, color);
+        return this;
+    }
+
+    public IPaint Function(IList<double> values, string name, Color color, out Color usedColor)
+
+    {
+        PaintFunctions.Function(values, name, color, out usedColor);
         return this;
     }
 
@@ -138,7 +166,13 @@ public class Paint : IPaint
     private IPaintFunctions? _paintFunctions;
 
     private IPaintFunctions PaintFunctions =>
-        _paintFunctions ??= new PaintFunctions { Graph = Graph, Palette = NeutralPalette };
+        _paintFunctions ??= new PaintFunctions
+        {
+            Graph = Graph,
+            BullPalette = BullPalette,
+            BearPalette = BearPalette,
+            NeutralPalette = NeutralPalette
+        };
 
     private IPaintSignals? _paintSignals;
 

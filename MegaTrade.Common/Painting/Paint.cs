@@ -1,4 +1,6 @@
-﻿using TSLab.Script;
+﻿using MegaTrade.Common.Painting.Painters;
+using MegaTrade.Common.Painting.Palettes;
+using TSLab.Script;
 using TSLab.Script.Handlers;
 
 namespace MegaTrade.Common.Painting;

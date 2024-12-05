@@ -1,6 +1,7 @@
 ﻿using MegaTrade.Common;
 using MegaTrade.Common.Extensions;
 using MegaTrade.Common.Painting;
+using MegaTrade.Common.Painting.Palettes;
 using System.ComponentModel;
 using TSLab.Script;
 using TSLab.Script.Handlers;

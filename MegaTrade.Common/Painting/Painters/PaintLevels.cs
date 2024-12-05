@@ -1,7 +1,7 @@
 ﻿using TSLab.Script;
 using TSLab.Script.Handlers;
 
-namespace MegaTrade.Common.Painting;
+namespace MegaTrade.Common.Painting.Painters;
 
 internal class PaintLevels : PaintBase, IPaintLevels
 {

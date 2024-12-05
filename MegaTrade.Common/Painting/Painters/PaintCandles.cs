@@ -1,7 +1,7 @@
 ﻿using MegaTrade.Common.Extensions;
 using TSLab.Script;
 
-namespace MegaTrade.Common.Painting;
+namespace MegaTrade.Common.Painting.Painters;
 
 internal class PaintCandles : IPaintCandles
 {

@@ -1,6 +1,7 @@
-﻿using TSLab.Script;
+﻿using MegaTrade.Common.Painting.Palettes;
+using TSLab.Script;
 
-namespace MegaTrade.Common.Painting;
+namespace MegaTrade.Common.Painting.Painters;
 
 internal abstract class PaintBase
 {

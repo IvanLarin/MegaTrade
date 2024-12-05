@@ -1,4 +1,4 @@
-namespace MegaTrade.Common.Painting;
+namespace MegaTrade.Common.Painting.Painters;
 
 internal interface IPaintBounds
 {

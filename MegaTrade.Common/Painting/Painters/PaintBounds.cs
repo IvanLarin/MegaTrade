@@ -19,7 +19,6 @@ internal class PaintBounds : IPaintBounds
             PaneSides.RIGHT);
         chart.Autoscaling = true;
         chart.Opacity = Opacity;
-        Graph.UpdatePrecision(PaneSides.RIGHT, 2);
     }
 
     public required IGraphPane Graph { protected get; init; }

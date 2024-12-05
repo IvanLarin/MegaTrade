@@ -28,7 +28,6 @@ internal class PaintCandles : IPaintCandles
         chart.AlternativeColor = colors.bear;
         chart.Opacity = colors.opacity;
         chart.Autoscaling = true;
-        Graph.UpdatePrecision(PaneSides.RIGHT, security.Decimals);
     }
 
     public required IGraphPane Graph { private get; init; }

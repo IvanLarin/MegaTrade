@@ -150,6 +150,12 @@ public class Paint : IPaint
         return this;
     }
 
+    public IPaint DecimalPlaces(int count)
+    {
+        Graph.UpdatePrecision(PaneSides.RIGHT, count);
+        return this;
+    }
+
     public IPaint Level(double value, string name, AnimalColor animalColor)
     {
         PaintLevels.Level(value, name, animalColor);
@@ -161,6 +167,8 @@ public class Paint : IPaint
         PaintLevels.Level(value, name, animalColor, out usedColor);
         return this;
     }
+
+
 
     private IGraphPane? _graph;
 

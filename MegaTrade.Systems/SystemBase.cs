@@ -145,15 +145,7 @@ public abstract class SystemBase : IHandler, IContextUses
 
     private IPaint? _paint;
 
-    protected IPaint Paint => _paint ??= new Paint
-    {
-        Context = Context,
-        AddToTop = true,
-        GraphName = Security.Symbol,
-        NeutralPalette = new NeutralPalette(),
-        BullPalette = new BullPalette(),
-        BearPalette = new BearPalette()
-    };
+    protected IPaint Paint => _paint ??= AddPaint(Security.Symbol).DecimalPlaces(Security.Decimals);
 
     private readonly IPalette _neutralPalette = new NeutralPalette();
 
@@ -164,14 +156,14 @@ public abstract class SystemBase : IHandler, IContextUses
         NeutralPalette = _neutralPalette,
         BullPalette = new BullPalette(),
         BearPalette = new BearPalette()
-    };
+    }.DecimalPlaces(2);
 
     protected virtual bool IsBasicTimeframeDraw => true;
 
     private void DoDraw()
     {
         if (IsBasicTimeframeDraw)
-            Paint.Candles(Security, Security.Symbol);
+            Paint.Candles(Security, Security.Symbol).DecimalPlaces(Security.Decimals);
 
         if (IsLongTrade)
         {

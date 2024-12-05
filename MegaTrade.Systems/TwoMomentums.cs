@@ -115,6 +115,7 @@ public class TwoMomentums : SystemBase
         .Signal(Select(() => IsLongExitSignal), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
 
     private void DrawRsi() => AddPaint("RSI")
+        .Bound(0).Bound(100)
         .Function(_smallTimeframeRsi, "RSI меньшего таймфрейма", out var smallRsiColor)
         .Level(OverboughtRsiOfSmall, "Уровень перекупленности меньшего таймфрейма", smallRsiColor)
         .Level(OversoldRsiOfSmall, "Уровень перепроданности меньшего таймфрейма", smallRsiColor)

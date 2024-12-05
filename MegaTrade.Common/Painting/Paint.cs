@@ -142,6 +142,12 @@ public class Paint : IPaint
         return this;
     }
 
+    public IPaint Bound(double bound)
+    {
+        PaintBounds.Bound(bound);
+        return this;
+    }
+
     public IPaint Level(double value, string name, AnimalColor animalColor)
     {
         PaintLevels.Level(value, name, animalColor);
@@ -205,6 +211,15 @@ public class Paint : IPaint
             BullPalette = BullPalette,
             BearPalette = BearPalette,
             NeutralPalette = NeutralPalette,
+            Context = Context
+        };
+
+    private IPaintBounds? _paintBounds;
+
+    private IPaintBounds PaintBounds =>
+        _paintBounds ??= new PaintBounds
+        {
+            Graph = Graph,
             Context = Context
         };
 

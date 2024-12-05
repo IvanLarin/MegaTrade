@@ -47,4 +47,6 @@ public interface IPaint
     IPaint Level(double value, string name, Color color);
 
     IPaint Level(double value, string name, Color color, out Color usedColor);
+
+    IPaint Bound(double bound);
 }

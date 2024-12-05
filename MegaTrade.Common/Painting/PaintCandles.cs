@@ -17,7 +17,8 @@ internal class PaintCandles : IPaintCandles
     public void Candles(ISecurity security, string? name = null) =>
         DrawCandles(security, name ?? security.GetTimeframeName(), false, _colors.Dequeue());
 
-    public void Trades(ISecurity security) => DrawCandles(security, security.Symbol, true, (0, 0, 99999));
+    public void Trades(ISecurity security) =>
+        DrawCandles(security, security.Symbol, true, (ScriptColors.Lime, ScriptColors.Lime, 99999));
 
     private void DrawCandles(ISecurity security, string name, bool showTrades, (int bull, int bear, int opacity) colors)
     {

@@ -48,7 +48,19 @@ public interface IPaint
 
     IPaint Level(double value, string name, Color color, out Color usedColor);
 
-    IPaint Bound(double bound);
+    IPaint Bound(params double[] bounds);
+
+    IPaint BoundOfMin(params IList<double>[] bounds);
+
+    IPaint BoundOfMax(params IList<double>[] bounds);
+
+    IPaint BoundOfMajorMax(params IList<double>[] bounds);
+
+    IPaint BoundOfMajorMin(params IList<double>[] bounds);
+
+    IPaint BoundOfMajorMax(double majorityPercent, params IList<double>[] bounds);
+
+    IPaint BoundOfMajorMin(double majorityPercent, params IList<double>[] bounds);
 
     IPaint DecimalPlaces(int count);
 }

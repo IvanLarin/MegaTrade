@@ -59,16 +59,24 @@ public abstract class SystemBase : IHandler, IContextUses
         Security.LotSize; //TODO каким количеством торговать, если счёт слился?
 
     private bool ShouldEnterLong =>
-        IsLongTrade && LotsToLongEnter.IsMoreThan(0) && IsLongEnterSignal;
+        IsLongTrade && IsLongEnterSignal &&
+        !IsLastCandleOfSession && !IsJustBeforeLastCandleOfSession &&
+        LotsToLongEnter.IsMoreThan(0);
 
     private bool ShouldEnterShort =>
-        IsShortTrade && LotsToShortEnter.IsMoreThan(0) && IsShortEnterSignal;
+        IsShortTrade && IsShortEnterSignal &&
+        !IsLastCandleOfSession && !IsJustBeforeLastCandleOfSession &&
+        LotsToShortEnter.IsMoreThan(0);
 
     private bool ShouldExitLong =>
-        IsLongTrade && LotsToLongExit.IsMoreThan(0) && IsLongExitSignal;
+        IsLongTrade && IsLongExitSignal &&
+        !IsLastCandleOfSession &&
+        LotsToLongExit.IsMoreThan(0);
 
     protected bool ShouldExitShort =>
-        IsShortTrade && LotsToShortExit.IsMoreThan(0) && IsShortExitSignal;
+        IsShortTrade && IsShortExitSignal &&
+        !IsLastCandleOfSession &&
+        LotsToShortExit.IsMoreThan(0);
 
     private void EnterLongAtMarket()
     {
@@ -143,6 +151,18 @@ public abstract class SystemBase : IHandler, IContextUses
     private IPosition? ShortPosition =>
         Security.Positions.GetLastActiveForSignal(ShortEnterName, Now);
 
+    private AntiGap? _antiGap;
+
+    private AntiGap AntiGap => _antiGap ??= new AntiGap
+    {
+        Context = Context,
+        Security = Security
+    };
+
+    private bool IsLastCandleOfSession => AntiGap.IsLastCandleOfSession(Now);
+
+    private bool IsJustBeforeLastCandleOfSession => AntiGap.IsJustBeforeLastCandleOfSession(Now);
+
     private IPaint? _paint;
 
     protected IPaint Paint => _paint ??= AddPaint(Security.Symbol).DecimalPlaces(Security.Decimals);
@@ -162,6 +182,8 @@ public abstract class SystemBase : IHandler, IContextUses
 
     private void DoDraw()
     {
+        Paint.Signal(Select(() => IsLastCandleOfSession || IsJustBeforeLastCandleOfSession), "Конец торговой сессии");
+
         if (IsBasicTimeframeDraw)
             Paint.Candles(Security, Security.Symbol).DecimalPlaces(Security.Decimals);
 

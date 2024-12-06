@@ -95,6 +95,6 @@ public static class Cache
     private static string MakeKey(string name, object[] dependencies) =>
         $"{name}: {JsonConvert.SerializeObject(dependencies)}";
 
-    public static ICacheEntry<T> Entry<T>(string name, CacheKind kind, IContext? ctx, object[] dependencies) =>
-        new CacheEntry<T>(name, dependencies, ctx, kind);
+    public static ICacheEntry<T> Entry<T>(string name, CacheKind kind, IContext? context, object[] dependencies) =>
+        new CacheEntry<T>(name, dependencies, context, kind);
 }

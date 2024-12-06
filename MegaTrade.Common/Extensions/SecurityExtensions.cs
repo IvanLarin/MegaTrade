@@ -9,5 +9,8 @@ namespace MegaTrade.Common.Extensions
             security.CompressTo(new Interval(interval, security.IntervalBase), 0, 1440, 0);
 
         public static string GetTimeframeName(this ISecurity security) => new TimeframeNamer(security).GetName();
+
+        public static uint GenerateCacheKey(this ISecurity security) =>
+            security.Bars.Select(x => x.Close).ToArray().GenerateCacheKey();
     }
 }

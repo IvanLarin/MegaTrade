@@ -1,12 +1,12 @@
 ﻿using MegaTrade.Common.Extensions;
 using MegaTrade.Common.Painting;
+using MegaTrade.Systems.Base;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
 
 namespace MegaTrade.Systems;
 
-[HandlerCategory("МегаСистемы")]
 [HandlerName("Моментум двух таймфреймов")]
 [InputsCount(3)]
 [Input(0, TemplateTypes.SECURITY, Name = "Источник")]
@@ -18,7 +18,7 @@ public class TwoMomentums : SystemBase
     protected override bool IsLongEnterSignal =>
         IsBullMacdStart &&
         !IsRsiOverbought &&
-        NoLongPosition;
+        NotInLongPosition;
 
     protected override bool IsLongExitSignal =>
         _smallTimeframeMacd[Now - 1] > 0 &&
@@ -27,7 +27,7 @@ public class TwoMomentums : SystemBase
     protected override bool IsShortEnterSignal =>
         IsBearMacdStart &&
         !IsRsiOversold &&
-        NoShortPosition;
+        NotInShortPosition;
 
     protected override bool IsShortExitSignal =>
         _smallTimeframeMacd[Now - 1] < 0 &&

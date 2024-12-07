@@ -7,7 +7,7 @@ namespace MegaTrade.Common.Extensions;
 
 public static class ListExtensions
 {
-    public static uint GenerateCacheKey(this IList<double> source)
+    public static uint CacheKey(this IList<double> source)
     {
         var bytes = new byte[source.Count * sizeof(double)];
         Buffer.BlockCopy(source.ToArray(), 0, bytes, 0, bytes.Length);

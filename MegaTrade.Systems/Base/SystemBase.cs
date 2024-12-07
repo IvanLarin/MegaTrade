@@ -6,16 +6,20 @@ using System.ComponentModel;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 
-namespace MegaTrade.Systems;
+namespace MegaTrade.Systems.Base;
 
 [HandlerCategory("МегаСистемы")]
 public abstract class SystemBase : IHandler, IContextUses
 {
-    protected void Setup(ISecurity security) => Security = security;
+    protected void Setup(ISecurity security)
+    {
+        Security = security;
+        TradeFromBar = Context.TradeFromBar;
+    }
 
     protected void Run()
     {
-        for (var i = Context.TradeFromBar; i < Context.BarsCount; i++)
+        for (var i = TradeFromBar; i < Context.BarsCount; i++)
         {
             Now = i;
 
@@ -134,22 +138,21 @@ public abstract class SystemBase : IHandler, IContextUses
 
     private double ToLotsCount(double volume) => Security.RoundShares(volume / Security.LotSize);
 
-    protected bool NoLongPosition => NoActivePosition(LongEnterName);
+    protected bool NotInLongPosition => LongPosition == null;
 
-    protected bool NoShortPosition => NoActivePosition(ShortEnterName);
+    protected bool NotInShortPosition => ShortPosition == null;
 
-    private bool NoActivePosition(string signalName) =>
-        Security.Positions.GetLastActiveForSignal(signalName, Now) == null;
+    private IPosition? LongPosition =>
+        Security.Positions.GetLastLongPositionActive(Now);
+
+    private IPosition? ShortPosition =>
+        Security.Positions.GetLastShortPositionActive(Now);
 
     private double LotsInLongPosition => IsLongTrade ? LongPosition?.Shares ?? 0 : 0;
 
     private double LotsInShortPosition => IsShortTrade ? ShortPosition?.Shares ?? 0 : 0;
 
-    private IPosition? LongPosition =>
-        Security.Positions.GetLastActiveForSignal(LongEnterName, Now);
-
-    private IPosition? ShortPosition =>
-        Security.Positions.GetLastActiveForSignal(ShortEnterName, Now);
+    protected int TradeFromBar { get; set; }
 
     private AntiGap? _antiGap;
 
@@ -206,9 +209,9 @@ public abstract class SystemBase : IHandler, IContextUses
 
     protected IList<T> Select<T>(Func<T> func) where T : struct
     {
-        List<T> result = Enumerable.Range(0, Context.TradeFromBar).Select(_ => default(T)).ToList();
+        List<T> result = Enumerable.Range(0, TradeFromBar).Select(_ => default(T)).ToList();
 
-        for (var i = Context.TradeFromBar; i < Context.BarsCount; i++)
+        for (var i = TradeFromBar; i < Context.BarsCount; i++)
         {
             Now = i;
             result.Add(func());

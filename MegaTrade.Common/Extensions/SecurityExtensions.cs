@@ -10,7 +10,7 @@ namespace MegaTrade.Common.Extensions
 
         public static string GetTimeframeName(this ISecurity security) => new TimeframeNamer(security).GetName();
 
-        public static uint GenerateCacheKey(this ISecurity security) =>
-            security.Bars.Select(x => x.Close).ToArray().GenerateCacheKey();
+        public static uint CacheKey(this ISecurity security) =>
+            security.Bars.Select(x => x.Close).ToArray().CacheKey();
     }
 }

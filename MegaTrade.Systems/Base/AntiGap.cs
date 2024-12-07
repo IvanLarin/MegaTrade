@@ -4,7 +4,7 @@ using TSLab.DataSource;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 
-namespace MegaTrade.Systems;
+namespace MegaTrade.Systems.Base;
 
 internal class AntiGap
 {
@@ -15,7 +15,7 @@ internal class AntiGap
     private bool[]? _tradeStops;
 
     public bool[] TradeStops => _tradeStops ??=
-        Cache.Entry<bool[]>(nameof(TradeStops), CacheKind.Memory, Context, [Security.GenerateCacheKey()])
+        Cache.Entry<bool[]>(nameof(TradeStops), CacheKind.Memory, Context, [Security.CacheKey()])
             .Calculate(() => Bars.Select((_, i) => IsStop(i)).ToArray());
 
     private bool IsStop(int i) => i == 0 && i <= FirstSessionStart || IsEndOfSession(i);

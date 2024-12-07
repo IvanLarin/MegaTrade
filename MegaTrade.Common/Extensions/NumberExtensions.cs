@@ -1,4 +1,6 @@
-﻿namespace MegaTrade.Common.Extensions;
+﻿using TSLab.Script;
+
+namespace MegaTrade.Common.Extensions;
 
 public static class NumberExtensions
 {
@@ -10,4 +12,34 @@ public static class NumberExtensions
         another.IsMoreThan(number) || another.IsEqualTo(number);
 
     public static bool IsDivisibleBy(this int number, int by) => number % by == 0;
+
+    public static int To(this int fromBarIndex, ISecurity timeframe)
+    {
+        var bars = timeframe.Bars;
+        var left = 0;
+        var right = bars.Count - 1;
+
+        while (true)
+        {
+            var center = (right + left) / 2;
+            var bar = bars[center];
+
+            if (bar.OriginalFirstIndex <= fromBarIndex && fromBarIndex <= bar.OriginalLastIndex)
+                if (fromBarIndex == bar.OriginalLastIndex)
+                    return center;
+                else
+                    return Math.Max(0, center - 1);
+
+            if (fromBarIndex < bar.OriginalFirstIndex)
+                right = center - 1;
+            else
+                left = center + 1;
+
+            if (left == right)
+                if (fromBarIndex == bars[left].OriginalLastIndex)
+                    return left;
+                else
+                    return Math.Max(0, left - 1);
+        }
+    }
 }

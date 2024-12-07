@@ -10,15 +10,15 @@ internal class PaintCandles : IPaintCandles
     public PaintCandles()
     {
         _colors.Enqueue((-6684885, -54485, 0));
-        _colors.Enqueue((-9579520, -2883584, 180));
-        _colors.Enqueue((-12419072, -8388608, 200));
+        _colors.Enqueue((-9579520, -2883584, 100));
+        _colors.Enqueue((-12419072, -8388608, 150));
     }
 
     public void Candles(ISecurity security, string? name = null) =>
         DrawCandles(security, name ?? security.GetTimeframeName(), false, _colors.Dequeue());
 
     public void Trades(ISecurity security) =>
-        DrawCandles(security, security.Symbol, true, (ScriptColors.Lime, ScriptColors.Lime, 99999));
+        DrawCandles(security, security.Symbol, true, (ScriptColors.LightSkyBlue, ScriptColors.LightSkyBlue, 99999));
 
     private void DrawCandles(ISecurity security, string name, bool showTrades, (int bull, int bear, int opacity) colors)
     {

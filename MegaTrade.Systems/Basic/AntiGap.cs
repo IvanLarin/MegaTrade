@@ -4,7 +4,7 @@ using TSLab.DataSource;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 
-namespace MegaTrade.Systems.Base;
+namespace MegaTrade.Systems.Basic;
 
 internal class AntiGap
 {

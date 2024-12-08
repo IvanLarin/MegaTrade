@@ -1,5 +1,5 @@
 using MegaTrade.Common.Extensions;
-using MegaTrade.Systems.Base;
+using MegaTrade.Systems.Basic;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
@@ -21,12 +21,12 @@ namespace MegaTrade.Systems;
 public class CandleSeries : SystemBase
 {
     protected override bool IsLongEnterSignal =>
+        NotInLongPosition &&
         Enumerable.Range(0, CandlesCount)
             .Select((_, i) => IsBullCandle(Now.To(_timeframe) - i))
-            .Aggregate((a, b) => a && b)
-        && NotInLongPosition;
+            .Aggregate((a, b) => a && b);
 
-    protected override bool IsLongExitSignal => IsBearCandle(Now.To(_timeframe));
+    protected override bool IsLongExitSignal => InLongPosition && IsBearCandle(Now.To(_timeframe));
 
     private bool IsBullCandle(int barIndex) =>
         _timeframe.Bars[barIndex].Close > _timeframe.Bars[barIndex].Open;
@@ -44,7 +44,7 @@ public class CandleSeries : SystemBase
         Run();
     }
 
-    protected override void Draw() => Paint.Candles(Security).Candles(_timeframe);
+    protected override void Draw() => Paint.Candles(BasicTimeframe).Candles(_timeframe);
 
     private const int AntiFuture = 1;
 

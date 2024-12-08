@@ -16,6 +16,10 @@ public static class NumberExtensions
     public static int To(this int fromBarIndex, ISecurity timeframe)
     {
         var bars = timeframe.Bars;
+
+        if (bars[0].OriginalFirstIndex == -1)
+            return fromBarIndex;
+
         var left = 0;
         var right = bars.Count - 1;
 

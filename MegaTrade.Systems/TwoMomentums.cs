@@ -1,6 +1,6 @@
 ﻿using MegaTrade.Common.Extensions;
 using MegaTrade.Common.Painting;
-using MegaTrade.Systems.Base;
+using MegaTrade.Systems.Basic;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;

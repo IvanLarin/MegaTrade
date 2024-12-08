@@ -135,6 +135,10 @@ internal abstract class TradeBase : ITrade
 
     public bool InShortPosition => ShortPosition != null;
 
+    public int? LongEnterBarNumber => LongPosition?.EntryBarNum;
+
+    public int? ShortEnterBarNumber => ShortPosition?.EntryBarNum;
+
     public required ISecurity BasicTimeframe { get; init; }
 
     public required ITradeRules TradeRules { get; init; }

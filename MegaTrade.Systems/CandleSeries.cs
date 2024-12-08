@@ -4,13 +4,6 @@ using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
 
-/*
- * Входить в позицию когда N свечей подряд растущие в направлении их роста.
- * Выход, когда образовалась свеча впротив входа.
- * Установить стоп-лосс на -2% от цены входа.
- * Установить плавающий стоп на +2% от цены входа.
- */
-
 namespace MegaTrade.Systems;
 
 [HandlerName("N однонаправленных свечей")]
@@ -23,10 +16,24 @@ public class CandleSeries : SystemBase
     protected override bool IsLongEnterSignal =>
         NotInLongPosition &&
         Enumerable.Range(0, CandlesCount)
+            .Select((_, i) => IsBearCandle(Now.To(_timeframe) - i))
+            .Aggregate((a, b) => a && b);
+
+    protected override bool IsLongExitSignal =>
+        InLongPosition &&
+        IsBearCandle(Now.To(_timeframe)) &&
+        Now.To(_timeframe) > LongEnterBarNumber?.To(_timeframe);
+
+    protected override bool IsShortEnterSignal =>
+        NotInShortPosition &&
+        Enumerable.Range(0, CandlesCount)
             .Select((_, i) => IsBullCandle(Now.To(_timeframe) - i))
             .Aggregate((a, b) => a && b);
 
-    protected override bool IsLongExitSignal => InLongPosition && IsBearCandle(Now.To(_timeframe));
+    protected override bool IsShortExitSignal =>
+        InShortPosition &&
+        IsBullCandle(Now.To(_timeframe)) &&
+        Now.To(_timeframe) > ShortEnterBarNumber?.To(_timeframe);
 
     private bool IsBullCandle(int barIndex) =>
         _timeframe.Bars[barIndex].Close > _timeframe.Bars[barIndex].Open;

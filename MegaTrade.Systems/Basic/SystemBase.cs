@@ -103,6 +103,10 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     protected bool NotInShortPosition => !InShortPosition;
 
+    protected int? LongEnterBarNumber => Trade.LongEnterBarNumber;
+
+    protected int? ShortEnterBarNumber => Trade.ShortEnterBarNumber;
+
     protected int TradeFromBar { get; set; }
 
     private AntiGap? _antiGap;

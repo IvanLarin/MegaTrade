@@ -13,4 +13,8 @@ internal interface ITrade
     bool InLongPosition { get; }
 
     bool InShortPosition { get; }
+
+    int? LongEnterBarNumber { get; }
+
+    int? ShortEnterBarNumber { get; }
 }

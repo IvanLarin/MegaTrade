@@ -2,7 +2,7 @@
 
 internal interface IAntiGap
 {
-    bool IsLastCandleOfSession(int barNumber);
+    bool IsLastCandleOfSession { get; }
 
-    bool IsJustBeforeLastCandleOfSession(int barNumber);
+    bool IsJustBeforeLastCandleOfSession { get; }
 }

@@ -1,4 +1,5 @@
-﻿using MegaTrade.Common.Extensions;
+﻿using MegaTrade.Basic.Gapping;
+using MegaTrade.Common.Extensions;
 using TSLab.Script;
 
 namespace MegaTrade.Basic.Trading;
@@ -24,12 +25,12 @@ internal abstract class TradeBase : ITrade
 
         if (lotsInPosition.IsEqualTo(0))
         {
-            BasicTimeframe.Positions.BuyAtMarket(Now + 1, lots, PositionNames.LongEnterName);
+            BasicTimeframe.Positions.BuyAtMarket(OnTheNextCandle, lots, PositionNames.LongEnterName);
             UpdateLongPosition();
         }
         else
         {
-            LongPosition?.ChangeAtMarket(Now + 1, lotsInPosition + lots, PositionNames.LongIncreaseName);
+            LongPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition + lots, PositionNames.LongIncreaseName);
         }
     }
 
@@ -52,12 +53,12 @@ internal abstract class TradeBase : ITrade
 
         if (lotsInPosition.IsEqualTo(0))
         {
-            BasicTimeframe.Positions.SellAtMarket(Now + 1, lots, PositionNames.ShortEnterName);
+            BasicTimeframe.Positions.SellAtMarket(OnTheNextCandle, lots, PositionNames.ShortEnterName);
             UpdateShortPosition();
         }
         else
         {
-            ShortPosition?.ChangeAtMarket(Now + 1, lotsInPosition + lots, PositionNames.ShortIncreaseName);
+            ShortPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition + lots, PositionNames.ShortIncreaseName);
         }
     }
 
@@ -80,12 +81,12 @@ internal abstract class TradeBase : ITrade
 
         if (lotsInPosition.IsLessOrEqualTo(lots))
         {
-            LongPosition?.CloseAtMarket(Now + 1, PositionNames.LongExitName);
+            LongPosition?.CloseAtMarket(OnTheNextCandle, PositionNames.LongExitName);
             UpdateLongPosition();
         }
         else
         {
-            LongPosition?.ChangeAtMarket(Now + 1, lotsInPosition - lots, PositionNames.LongDecreaseName);
+            LongPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition - lots, PositionNames.LongDecreaseName);
         }
     }
 
@@ -108,53 +109,56 @@ internal abstract class TradeBase : ITrade
 
         if (lotsInPosition.IsLessOrEqualTo(lots))
         {
-            ShortPosition?.CloseAtMarket(Now + 1, PositionNames.ShortExitName);
+            ShortPosition?.CloseAtMarket(OnTheNextCandle, PositionNames.ShortExitName);
             UpdateShortPosition();
         }
         else
         {
-            ShortPosition?.ChangeAtMarket(Now + 1, lotsInPosition - lots, PositionNames.ShortDecreaseName);
+            ShortPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition - lots, PositionNames.ShortDecreaseName);
         }
     }
 
     public void Do()
     {
-        DoLong();
-        DoShort();
+        DoLongStops();
+        DoShortStops();
     }
 
-    private void DoLong()
+    private void DoLongStops()
     {
-        if (TradeRules.IsLongTrade && LongPosition != null)
+        if (TradeRules.IsLongTrade && LongPosition != null && !AntiGap.IsLastCandleOfSession)
         {
             if (Stops.LongTake.HasValue)
-                LongPosition.CloseAtProfit(Now + 1, Stops.LongTake.Value,
+                LongPosition.CloseAtProfit(OnTheNextCandle, Stops.LongTake.Value,
                     PositionNames.LongTakeProfit);
 
             if (Stops.LongStop.HasValue)
-                LongPosition.CloseAtStop(Now + 1, Stops.LongStop.Value,
+                LongPosition.CloseAtStop(OnTheNextCandle, Stops.LongStop.Value,
                     PositionNames.LongStopLoss);
-
-            UpdateLongPosition();
-
-            //TODO снять стопы, на предпоследней свече сессии
         }
     }
 
-    private void DoShort()
+    private void DoShortStops()
     {
-        if (TradeRules.IsShortTrade && ShortPosition != null)
+        if (TradeRules.IsShortTrade && ShortPosition != null && !AntiGap.IsLastCandleOfSession)
         {
             if (Stops.ShortTake.HasValue)
-                ShortPosition.CloseAtProfit(Now + 1, Stops.ShortTake.Value,
+                ShortPosition.CloseAtProfit(OnTheNextCandle, Stops.ShortTake.Value,
                     PositionNames.ShortTakeProfit);
 
             if (Stops.ShortStop.HasValue)
-                ShortPosition.CloseAtStop(Now + 1, Stops.ShortStop.Value,
+                ShortPosition.CloseAtStop(OnTheNextCandle, Stops.ShortStop.Value,
                     PositionNames.ShortStopLoss);
-
-            UpdateShortPosition();
         }
+    }
+
+    public void Update()
+    {
+        if (TradeRules.IsLongTrade && LongPosition != null)
+            UpdateLongPosition();
+
+        if (TradeRules.IsShortTrade && ShortPosition != null)
+            UpdateShortPosition();
     }
 
     protected abstract void UpdateLongPosition();
@@ -195,7 +199,11 @@ internal abstract class TradeBase : ITrade
 
     public required INowProvider NowProvider { get; init; }
 
-    public required IStops Stops { get; init; }
-
     protected int Now => NowProvider.Now;
+
+    private int OnTheNextCandle => Now + 1;
+
+    public required IAntiGap AntiGap { get; init; }
+
+    public required IStops Stops { get; init; }
 }

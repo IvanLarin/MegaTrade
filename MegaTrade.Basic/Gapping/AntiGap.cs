@@ -8,9 +8,9 @@ namespace MegaTrade.Basic.Gapping;
 
 internal class AntiGap : IAntiGap
 {
-    public bool IsLastCandleOfSession(int barNumber) => TradeStops[barNumber];
+    public bool IsLastCandleOfSession => TradeStops[Now];
 
-    public bool IsJustBeforeLastCandleOfSession(int barNumber) => barNumber + 1 < TradeStops.Length && TradeStops[barNumber + 1];
+    public bool IsJustBeforeLastCandleOfSession => Now + 1 < TradeStops.Length && TradeStops[Now + 1];
 
     private bool[]? _tradeStops;
 
@@ -75,4 +75,8 @@ internal class AntiGap : IAntiGap
     public required ISecurity Security { private get; init; }
 
     public required IContext Context { private get; init; }
+
+    public required INowProvider NowProvider { get; init; }
+
+    private int Now => NowProvider.Now;
 }

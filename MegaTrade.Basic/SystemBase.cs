@@ -25,6 +25,8 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         {
             Now = i;
 
+            Trade.Update();
+
             if (ShouldEnterLong)
             {
                 Trade.EnterLongAtMarket(LongEnterVolume);
@@ -125,12 +127,13 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     private IAntiGap AntiGap => _antiGap ??= new AntiGap
     {
         Context = Context,
-        Security = BasicTimeframe
+        Security = BasicTimeframe,
+        NowProvider = this
     };
 
-    private bool IsLastCandleOfSession => AntiGap.IsLastCandleOfSession(Now);
+    private bool IsLastCandleOfSession => AntiGap.IsLastCandleOfSession;
 
-    private bool IsJustBeforeLastCandleOfSession => AntiGap.IsJustBeforeLastCandleOfSession(Now);
+    private bool IsJustBeforeLastCandleOfSession => AntiGap.IsJustBeforeLastCandleOfSession;
 
     private bool[]? _longEnterSignals; //TODO убрать рисовалово в отдельный класс
 
@@ -236,6 +239,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
             TradeRules = this,
             NowProvider = this,
             Stops = this,
+            AntiGap = AntiGap
         }
         : new HistoryTrade
         {
@@ -243,6 +247,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
             TradeRules = this,
             NowProvider = this,
             Stops = this,
+            AntiGap = AntiGap
         };
 
     [Description("Открывать ли длинные позиции")]

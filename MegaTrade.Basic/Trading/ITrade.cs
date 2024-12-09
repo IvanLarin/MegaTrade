@@ -17,4 +17,6 @@ internal interface ITrade
     public IPositionInfo? ShortPositionInfo { get; }
 
     void Do();
+
+    void Update();
 }

@@ -117,6 +117,35 @@ internal abstract class TradeBase : ITrade
         }
     }
 
+    public void Do()
+    {
+        if (TradeRules.IsLongTrade && LongPosition != null)
+        {
+            if (Stops.LongTake.HasValue)
+                LongPosition.CloseAtProfit(Now + 1, Stops.LongTake.Value,
+                    PositionNames.LongTakeProfit);
+
+            if (Stops.LongStop.HasValue)
+                LongPosition.CloseAtStop(Now + 1, Stops.LongStop.Value,
+                    PositionNames.LongStopLoss);
+
+            UpdateLongPosition();
+        }
+
+        if (TradeRules.IsShortTrade && ShortPosition != null)
+        {
+            if (Stops.ShortTake.HasValue)
+                ShortPosition.CloseAtProfit(Now + 1, Stops.ShortTake.Value,
+                    PositionNames.ShortTakeProfit);
+
+            if (Stops.ShortStop.HasValue)
+                ShortPosition.CloseAtStop(Now + 1, Stops.ShortStop.Value,
+                    PositionNames.ShortStopLoss);
+
+            UpdateShortPosition();
+        }
+    }
+
     protected abstract void UpdateLongPosition();
 
     protected abstract void UpdateShortPosition();
@@ -129,21 +158,33 @@ internal abstract class TradeBase : ITrade
 
     protected abstract IPosition? ShortPosition { get; }
 
+    public IPositionInfo? LongPositionInfo => LongPosition == null
+        ? null
+        : new ReturningFromTheFuture
+        {
+            PositionInfo = LongPosition,
+            NowProvider = NowProvider,
+            BasicTimeframe = BasicTimeframe
+        };
+
+    public IPositionInfo? ShortPositionInfo => ShortPosition == null
+        ? null
+        : new ReturningFromTheFuture
+        {
+            PositionInfo = ShortPosition,
+            NowProvider = NowProvider,
+            BasicTimeframe = BasicTimeframe
+        };
+
     private double ToLotsCount(double volume) => BasicTimeframe.RoundShares(volume / BasicTimeframe.LotSize);
-
-    public bool InLongPosition => LongPosition != null;
-
-    public bool InShortPosition => ShortPosition != null;
-
-    public int? LongEnterBarNumber => LongPosition?.EntryBarNum;
-
-    public int? ShortEnterBarNumber => ShortPosition?.EntryBarNum;
 
     public required ISecurity BasicTimeframe { get; init; }
 
     public required ITradeRules TradeRules { get; init; }
 
     public required INowProvider NowProvider { get; init; }
+
+    public required IStops Stops { get; init; }
 
     protected int Now => NowProvider.Now;
 }

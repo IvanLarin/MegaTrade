@@ -19,21 +19,11 @@ public class CandleSeries : SystemBase
             .Select((_, i) => IsBearCandle(Now.To(_timeframe) - i))
             .Aggregate((a, b) => a && b);
 
-    protected override bool IsLongExitSignal =>
-        InLongPosition &&
-        IsBearCandle(Now.To(_timeframe)) &&
-        Now.To(_timeframe) > LongEnterBarNumber?.To(_timeframe);
-
     protected override bool IsShortEnterSignal =>
         NotInShortPosition &&
         Enumerable.Range(0, CandlesCount)
             .Select((_, i) => IsBullCandle(Now.To(_timeframe) - i))
             .Aggregate((a, b) => a && b);
-
-    protected override bool IsShortExitSignal =>
-        InShortPosition &&
-        IsBullCandle(Now.To(_timeframe)) &&
-        Now.To(_timeframe) > ShortEnterBarNumber?.To(_timeframe);
 
     private bool IsBullCandle(int barIndex) =>
         _timeframe.Bars[barIndex].Close > _timeframe.Bars[barIndex].Open;
@@ -41,12 +31,30 @@ public class CandleSeries : SystemBase
     private bool IsBearCandle(int barIndex) =>
         _timeframe.Bars[barIndex].Close < _timeframe.Bars[barIndex].Open;
 
+    public override double? LongTake => LongPosition == null
+        ? null
+        : LongPosition.EntryPrice + AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
+
+    public override double? LongStop => LongPosition == null
+        ? null
+        : LongPosition.EntryPrice - AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
+
+    public override double? ShortTake => ShortPosition == null
+        ? null
+        : ShortPosition.EntryPrice - AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
+
+    public override double? ShortStop => ShortPosition == null
+        ? null
+        : ShortPosition.EntryPrice + AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
+
     public void Execute(ISecurity security, ISecurity timeframe)
     {
         Setup(security);
-        TradeFromBar = (CandlesCount + AntiFuture) * timeframe.Interval;
+        TradeFromBar = Math.Max((CandlesCount + AntiFuture) * timeframe.Interval, AtrPeriod); //TODO
 
         _timeframe = timeframe;
+
+        _atr = Indicators.ATR(timeframe, AtrPeriod);
 
         Run();
     }
@@ -57,7 +65,15 @@ public class CandleSeries : SystemBase
 
     private ISecurity _timeframe = null!;
 
+    private IList<double> _atr = [];
+
     [HelperDescription("Число свечей в серии в одном направлении")]
-    [HandlerParameter(Name = "Число свечей", IsShown = true, Default = "3", Min = "1", Step = "1")]
+    [HandlerParameter(Name = "Число свечей", Default = "3", Min = "1", Step = "1")]
     public int CandlesCount { get; set; }
+
+    [HandlerParameter(Default = "20", Min = "1", Step = "1")]
+    public int AtrPeriod { get; set; }
+
+    [HandlerParameter(Default = "2", Min = "0.1", Step = "0.1")]
+    public double AtrMultiplier { get; set; }
 }

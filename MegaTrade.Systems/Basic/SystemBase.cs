@@ -10,7 +10,7 @@ using TSLab.Script.Handlers;
 namespace MegaTrade.Systems.Basic;
 
 [HandlerCategory("МегаСистемы")]
-public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider
+public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, IStops
 {
     protected void Setup(ISecurity security)
     {
@@ -47,6 +47,8 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
                 Trade.ExitShortAtMarket(ShortExitVolume);
                 ShortExitSignals[Now] = true;
             }
+
+            Trade.Do();
         }
 
         if (!Context.IsOptimization)
@@ -95,17 +97,25 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         !IsLastCandleOfSession &&
         ShortExitVolume.IsMoreThan(0);
 
-    protected bool InLongPosition => Trade.InLongPosition;
+    protected bool InLongPosition => Trade.LongPositionInfo != null;
 
     protected bool NotInLongPosition => !InLongPosition;
 
-    protected bool InShortPosition => Trade.InShortPosition;
+    protected bool InShortPosition => Trade.ShortPositionInfo != null;
 
     protected bool NotInShortPosition => !InShortPosition;
 
-    protected int? LongEnterBarNumber => Trade.LongEnterBarNumber;
+    protected IPositionInfo? LongPosition => Trade.LongPositionInfo;
 
-    protected int? ShortEnterBarNumber => Trade.ShortEnterBarNumber;
+    protected IPositionInfo? ShortPosition => Trade.ShortPositionInfo;
+
+    public virtual double? LongTake => null;
+
+    public virtual double? LongStop => null;
+
+    public virtual double? ShortTake => null;
+
+    public virtual double? ShortStop => null;
 
     protected int TradeFromBar { get; set; }
 
@@ -196,9 +206,9 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
     }
 
-    private IIndicatorFactory? _indicatorFactory;
+    private IIndicators? _indicatorFactory;
 
-    protected IIndicatorFactory IIndicatorFactory => _indicatorFactory ??= new IndicatorFactory(Context);
+    protected IIndicators Indicators => _indicatorFactory ??= new Indicators(Context);
 
     private IContext? _context;
 
@@ -223,13 +233,15 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         {
             BasicTimeframe = BasicTimeframe,
             TradeRules = this,
-            NowProvider = this
+            NowProvider = this,
+            Stops = this,
         }
         : new HistoryTrade
         {
             BasicTimeframe = BasicTimeframe,
             TradeRules = this,
-            NowProvider = this
+            NowProvider = this,
+            Stops = this,
         };
 
     [Description("Открывать ли длинные позиции")]

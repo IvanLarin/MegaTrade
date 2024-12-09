@@ -66,20 +66,20 @@ public class TwoMomentums : SystemBase
         _smallTimeframeClosePrices = smallTimeframe.ClosePrices;
         _bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
-        _smallTimeframeMacd = IIndicatorFactory
-            .MakeMacd(_smallTimeframeClosePrices, SmallMacdOfSmall, BigMacdOfSmall)
+        _smallTimeframeMacd = Indicators
+            .MACD(_smallTimeframeClosePrices, SmallMacdOfSmall, BigMacdOfSmall)
             .DecompressBy(smallTimeframe);
 
-        _bigTimeframeMacd = IIndicatorFactory
-            .MakeMacd(_bigTimeframeClosePrices, SmallMacdOfBig, BigMacdOfBig)
+        _bigTimeframeMacd = Indicators
+            .MACD(_bigTimeframeClosePrices, SmallMacdOfBig, BigMacdOfBig)
             .DecompressBy(bigTimeframe);
 
-        _smallTimeframeRsi = IIndicatorFactory
-            .MakeRsi(_smallTimeframeClosePrices, RsiPeriodOfSmall)
+        _smallTimeframeRsi = Indicators
+            .RSI(_smallTimeframeClosePrices, RsiPeriodOfSmall)
             .DecompressBy(smallTimeframe);
 
-        _bigTimeframeRsi = IIndicatorFactory
-            .MakeRsi(_bigTimeframeClosePrices, RsiPeriodOfBig)
+        _bigTimeframeRsi = Indicators
+            .RSI(_bigTimeframeClosePrices, RsiPeriodOfBig)
             .DecompressBy(bigTimeframe);
 
         Run();
@@ -130,43 +130,43 @@ public class TwoMomentums : SystemBase
         .Signal(Select(() => IsRsiOversold), "Перепроданность", AnimalColor.Bear);
 
     [HelperDescription("Малый период MACD меньшего таймфрейма")]
-    [HandlerParameter(Name = "SmallMacdOfSmall", IsShown = true, Default = "12", Min = "2", Step = "1")]
+    [HandlerParameter(Name = "SmallMacdOfSmall", Default = "12", Min = "2", Step = "1")]
     public int SmallMacdOfSmall { get; set; }
 
     [HelperDescription("Больший период MACD меньшего таймфрейма")]
-    [HandlerParameter(Name = "BigMacdOfSmall", IsShown = true, Default = "26", Min = "3", Step = "1")]
+    [HandlerParameter(Name = "BigMacdOfSmall", Default = "26", Min = "3", Step = "1")]
     public int BigMacdOfSmall { get; set; }
 
     [HelperDescription("Малый период MACD большего таймфрейма")]
-    [HandlerParameter(Name = "SmallMacdOfBig", IsShown = true, Default = "12", Min = "2", Step = "1")]
+    [HandlerParameter(Name = "SmallMacdOfBig", Default = "12", Min = "2", Step = "1")]
     public int SmallMacdOfBig { get; set; }
 
     [HelperDescription("Больший период MACD большего таймфрейма")]
-    [HandlerParameter(Name = "BigMacdOfBig", IsShown = true, Default = "26", Min = "3", Step = "1")]
+    [HandlerParameter(Name = "BigMacdOfBig", Default = "26", Min = "3", Step = "1")]
     public int BigMacdOfBig { get; set; }
 
     [HelperDescription("Период RSI меньшего таймфрейма")]
-    [HandlerParameter(Name = "RsiPeriodOfSmall", IsShown = true, Default = "20", Min = "1", Step = "1")]
+    [HandlerParameter(Name = "RsiPeriodOfSmall", Default = "20", Min = "1", Step = "1")]
     public int RsiPeriodOfSmall { get; set; }
 
     [HelperDescription("Период RSI большего таймфрейма")]
-    [HandlerParameter(Name = "RsiPeriodOfBig", IsShown = true, Default = "20", Min = "1", Step = "1")]
+    [HandlerParameter(Name = "RsiPeriodOfBig", Default = "20", Min = "1", Step = "1")]
     public int RsiPeriodOfBig { get; set; }
 
     [HelperDescription("Перекупленность RSI большего тайфрейма")]
-    [HandlerParameter(Name = "OverboughtRsiOfBig", IsShown = true, Default = "70", Min = "1", Max = "100", Step = "1")]
+    [HandlerParameter(Name = "OverboughtRsiOfBig", Default = "70", Min = "1", Max = "100", Step = "1")]
     public double OverboughtRsiOfBig { get; set; }
 
     [HelperDescription("Перекупленность RSI меньшего тайфрейма")]
-    [HandlerParameter(Name = "OverboughtRsiOfSmall", IsShown = true, Default = "70", Min = "1", Max = "100",
+    [HandlerParameter(Name = "OverboughtRsiOfSmall", Default = "70", Min = "1", Max = "100",
         Step = "1")]
     public double OverboughtRsiOfSmall { get; set; }
 
     [HelperDescription("Перепроданность RSI меньшего тайфрейма")]
-    [HandlerParameter(Name = "OversoldRsiOfSmall", IsShown = true, Default = "30", Min = "1", Max = "100", Step = "1")]
+    [HandlerParameter(Name = "OversoldRsiOfSmall", Default = "30", Min = "1", Max = "100", Step = "1")]
     public double OversoldRsiOfSmall { get; set; }
 
     [HelperDescription("Перепроданность RSI большего тайфрейма")]
-    [HandlerParameter(Name = "OversoldRsiOfBig", IsShown = true, Default = "30", Min = "1", Max = "100", Step = "1")]
+    [HandlerParameter(Name = "OversoldRsiOfBig", Default = "30", Min = "1", Max = "100", Step = "1")]
     public double OversoldRsiOfBig { get; set; }
 }

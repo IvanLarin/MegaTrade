@@ -1,4 +1,6 @@
-﻿namespace MegaTrade.Systems.Basic.Trading;
+﻿using TSLab.Script;
+
+namespace MegaTrade.Systems.Basic.Trading;
 
 internal interface ITrade
 {
@@ -10,11 +12,9 @@ internal interface ITrade
 
     void ExitShortAtMarket(double volume);
 
-    bool InLongPosition { get; }
+    public IPositionInfo? LongPositionInfo { get; }
 
-    bool InShortPosition { get; }
+    public IPositionInfo? ShortPositionInfo { get; }
 
-    int? LongEnterBarNumber { get; }
-
-    int? ShortEnterBarNumber { get; }
+    void Do();
 }

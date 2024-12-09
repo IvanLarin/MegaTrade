@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MegaTrade.Basic\MegaTrade.Basic.csproj" />
     <ProjectReference Include="..\MegaTrade.Common\MegaTrade.Common.csproj" />
+    <ProjectReference Include="..\MegaTrade.Painting\MegaTrade.Draw.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,9 +25,5 @@
       <HintPath>..\DLLs\TSLab.Utility.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*&quot; &quot;%25LOCALAPPDATA%25\TSLab\TSLab 2.0\Handlers&quot; /E /H /Y" />
-  </Target>
 
 </Project>

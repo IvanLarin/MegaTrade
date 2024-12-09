@@ -1,5 +1,5 @@
+using MegaTrade.Basic;
 using MegaTrade.Common.Extensions;
-using MegaTrade.Systems.Basic;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
@@ -31,26 +31,22 @@ public class CandleSeries : SystemBase
     private bool IsBearCandle(int barIndex) =>
         _timeframe.Bars[barIndex].Close < _timeframe.Bars[barIndex].Open;
 
-    public override double? LongTake => LongPosition == null
-        ? null
-        : LongPosition.EntryPrice + AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
+    public override double? LongTake =>
+        LongPosition!.EntryPrice + AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
 
-    public override double? LongStop => LongPosition == null
-        ? null
-        : LongPosition.EntryPrice - AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
+    public override double? LongStop =>
+        LongPosition!.EntryPrice - AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
 
-    public override double? ShortTake => ShortPosition == null
-        ? null
-        : ShortPosition.EntryPrice - AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
+    public override double? ShortTake =>
+        ShortPosition!.EntryPrice - AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
 
-    public override double? ShortStop => ShortPosition == null
-        ? null
-        : ShortPosition.EntryPrice + AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
+    public override double? ShortStop =>
+        ShortPosition!.EntryPrice + AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
 
     public void Execute(ISecurity security, ISecurity timeframe)
     {
         Setup(security);
-        TradeFromBar = Math.Max((CandlesCount + AntiFuture) * timeframe.Interval, AtrPeriod); //TODO
+        TradeFromBar = Math.Max((CandlesCount + AntiFuture) * timeframe.Interval, AtrPeriod); //TODO надо не устанавливать это, а делать ограничением снизу
 
         _timeframe = timeframe;
 

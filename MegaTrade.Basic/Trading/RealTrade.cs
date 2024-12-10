@@ -10,11 +10,17 @@ internal class RealTrade : TradeBase
     protected override IPosition? ShortPosition =>
         BasicTimeframe.Positions.GetLastShortPositionActive(Now);
 
-    protected override void UpdateLongPosition()
+    protected override IPosition? NextLongPosition =>
+        BasicTimeframe.Positions.GetLastLongPositionActive(OnTheNextCandle);
+
+    protected override IPosition? NextShortPosition =>
+        BasicTimeframe.Positions.GetLastShortPositionActive(OnTheNextCandle);
+
+    protected override void UpdateNow()
     {
     }
 
-    protected override void UpdateShortPosition()
+    protected override void UpdateNext()
     {
     }
 }

@@ -3,44 +3,42 @@ using TSLab.Script;
 
 namespace MegaTrade.Basic.Trading;
 
-internal class ReturningFromTheFuture : IPositionInfo
+internal class ReturningFromTheFuture(IPositionInfo positionInfo) : IPositionInfo
 {
-    public int EntryBarNum => Math.Min(Now, PositionInfo.EntryBarNum);
+    public int EntryBarNum => Math.Min(Now, positionInfo.EntryBarNum);
 
     public IDataBar EntryBar => BasicTimeframe.Bars[EntryBarNum];
 
     public double EntryPrice =>
-        PositionInfo.EntryBarNum > Now ? BasicTimeframe.Bars[Now].Close : PositionInfo.EntryPrice;
+        positionInfo.EntryBarNum > Now ? BasicTimeframe.Bars[Now].Close : positionInfo.EntryPrice;
 
-    public double AverageEntryPrice => PositionInfo.EntryBarNum > Now
+    public double AverageEntryPrice => positionInfo.EntryBarNum > Now
         ? BasicTimeframe.Bars[Now].Close
-        : PositionInfo.AverageEntryPrice;
+        : positionInfo.AverageEntryPrice;
 
-    public string EntrySignalName => PositionInfo.EntrySignalName;
+    public string EntrySignalName => positionInfo.EntrySignalName;
 
-    public string EntryNotes => PositionInfo.EntryNotes;
+    public string EntryNotes => positionInfo.EntryNotes;
 
-    public string ExitSignalName => PositionInfo.ExitSignalName;
+    public string ExitSignalName => positionInfo.ExitSignalName;
 
-    public string ExitNotes => PositionInfo.ExitNotes;
+    public string ExitNotes => positionInfo.ExitNotes;
 
-    public double EntryCommission => PositionInfo.EntryCommission;
+    public double EntryCommission => positionInfo.EntryCommission;
 
-    public double ExitPrice => PositionInfo.ExitPrice;
+    public double ExitPrice => positionInfo.ExitPrice;
 
-    public double ExitCommission => PositionInfo.ExitCommission;
+    public double ExitCommission => positionInfo.ExitCommission;
 
-    public double Shares => PositionInfo.Shares;
+    public double Shares => positionInfo.Shares;
 
-    public double SignedShares => PositionInfo.SignedShares;
+    public double SignedShares => positionInfo.SignedShares;
 
-    public double SharesChange => PositionInfo.SharesChange;
+    public double SharesChange => positionInfo.SharesChange;
 
-    public int ExitBarNum => PositionInfo.ExitBarNum;
+    public int ExitBarNum => positionInfo.ExitBarNum;
 
-    public IDataBar ExitBar => PositionInfo.ExitBar;
-
-    public required IPositionInfo PositionInfo { get; init; }
+    public IDataBar ExitBar => positionInfo.ExitBar;
 
     public required INowProvider NowProvider { get; init; }
 

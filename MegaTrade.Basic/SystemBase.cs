@@ -11,7 +11,7 @@ using TSLab.Script.Handlers;
 namespace MegaTrade.Basic;
 
 [HandlerCategory("МегаСистемы")]
-public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, IStops
+public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, ISignals
 {
     protected void Setup(ISecurity security)
     {
@@ -19,39 +19,20 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         TradeFromBar = Context.TradeFromBar; //TODO
     }
 
+    //TODO вынести всё рисовалово в рисовалово
+
     protected void Run()
     {
         for (var i = TradeFromBar; i < Context.BarsCount; i++)
         {
             Now = i;
 
-            Trade.Update();
-
-            if (ShouldEnterLong)
-            {
-                Trade.EnterLongAtMarket(LongEnterVolume);
-                LongEnterSignals[Now] = true;
-            }
-
-            if (ShouldExitLong)
-            {
-                Trade.ExitLongAtMarket(LongExitVolume);
-                LongExitSignals[Now] = true;
-            }
-
-            if (ShouldEnterShort)
-            {
-                Trade.EnterShortAtMarket(ShortEnterVolume);
-                ShortEnterSignals[Now] = true;
-            }
-
-            if (ShouldExitShort)
-            {
-                Trade.ExitShortAtMarket(ShortExitVolume);
-                ShortExitSignals[Now] = true;
-            }
-
             Trade.Do();
+
+            LongEnters[Now] = Trade.IsLongEnter;
+            LongExits[Now] = Trade.IsLongExit;
+            ShortEnters[Now] = Trade.IsShortEnter;
+            ShortExits[Now] = Trade.IsShortExit;
         }
 
         if (!Context.IsOptimization)
@@ -60,45 +41,25 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     public int Now { get; private set; }
 
-    protected virtual bool IsLongEnterSignal => false;
+    public virtual bool IsLongEnterSignal => false;
 
-    protected virtual bool IsLongExitSignal => false;
+    public virtual bool IsLongExitSignal => false;
 
-    protected virtual bool IsShortEnterSignal => false;
+    public virtual bool IsShortEnterSignal => false;
 
-    protected virtual bool IsShortExitSignal => false;
+    public virtual bool IsShortExitSignal => false;
 
-    protected virtual double LongEnterVolume =>
+    public virtual double LongEnterVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
-    protected virtual double LongExitVolume =>
+    public virtual double LongExitVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
-    protected virtual double ShortEnterVolume =>
+    public virtual double ShortEnterVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
-    protected virtual double ShortExitVolume =>
+    public virtual double ShortExitVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
-
-    private bool ShouldEnterLong =>
-        IsLongTrade && IsLongEnterSignal &&
-        !IsLastCandleOfSession && !IsJustBeforeLastCandleOfSession &&
-        LongEnterVolume.IsMoreThan(0);
-
-    private bool ShouldEnterShort =>
-        IsShortTrade && IsShortEnterSignal &&
-        !IsLastCandleOfSession && !IsJustBeforeLastCandleOfSession &&
-        ShortEnterVolume.IsMoreThan(0);
-
-    private bool ShouldExitLong =>
-        IsLongTrade && IsLongExitSignal &&
-        !IsLastCandleOfSession &&
-        LongExitVolume.IsMoreThan(0);
-
-    protected bool ShouldExitShort =>
-        IsShortTrade && IsShortExitSignal &&
-        !IsLastCandleOfSession &&
-        ShortExitVolume.IsMoreThan(0);
 
     protected bool InLongPosition => Trade.LongPositionInfo != null;
 
@@ -108,17 +69,13 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     protected bool NotInShortPosition => !InShortPosition;
 
-    protected IPositionInfo? LongPosition => Trade.LongPositionInfo;
+    public virtual double? GetLongTake(IPositionInfo position) => null;
 
-    protected IPositionInfo? ShortPosition => Trade.ShortPositionInfo;
+    public virtual double? GetLongStop(IPositionInfo position) => null;
 
-    public virtual double? LongTake => null;
+    public virtual double? GetShortTake(IPositionInfo position) => null;
 
-    public virtual double? LongStop => null;
-
-    public virtual double? ShortTake => null;
-
-    public virtual double? ShortStop => null;
+    public virtual double? GetShortStop(IPositionInfo position) => null;
 
     protected int TradeFromBar { get; set; }
 
@@ -143,13 +100,13 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     private bool[]? _shortExitSignals;
 
-    private bool[] LongEnterSignals => _longEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] LongEnters => _longEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
-    private bool[] LongExitSignals => _longExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] LongExits => _longExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
-    private bool[] ShortEnterSignals => _shortEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] ShortEnters => _shortEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
-    private bool[] ShortExitSignals => _shortExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] ShortExits => _shortExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
     private IPaint? _paint;
 
@@ -178,14 +135,14 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
         if (IsLongTrade)
         {
-            Paint.Signal(LongEnterSignals, "Сигнал на вход в лонг", AnimalColor.Bull);
-            Paint.Signal(LongExitSignals, "Сигнал на выход из лонга", AnimalColor.Bear);
+            Paint.Signal(LongEnters, "Сигнал на вход в лонг", AnimalColor.Bull);
+            Paint.Signal(LongExits, "Сигнал на выход из лонга", AnimalColor.Bear);
         }
 
         if (IsShortTrade)
         {
-            Paint.Signal(ShortEnterSignals, "Сигнал на вход в шорт", AnimalColor.Bull);
-            Paint.Signal(ShortExitSignals, "Сигнал на выход из шорта", AnimalColor.Bear);
+            Paint.Signal(ShortEnters, "Сигнал на вход в шорт", AnimalColor.Bull);
+            Paint.Signal(ShortExits, "Сигнал на выход из шорта", AnimalColor.Bear);
         }
 
         Draw();
@@ -238,7 +195,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
             BasicTimeframe = BasicTimeframe,
             TradeRules = this,
             NowProvider = this,
-            Stops = this,
+            Signals = this,
             AntiGap = AntiGap
         }
         : new HistoryTrade
@@ -246,7 +203,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
             BasicTimeframe = BasicTimeframe,
             TradeRules = this,
             NowProvider = this,
-            Stops = this,
+            Signals = this,
             AntiGap = AntiGap
         };
 

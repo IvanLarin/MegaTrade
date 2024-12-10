@@ -15,21 +15,21 @@ namespace MegaTrade.Systems;
 [OutputsCount(0)]
 public class TwoMomentums : SystemBase
 {
-    protected override bool IsLongEnterSignal =>
+    public override bool IsLongEnterSignal =>
         IsBullMacdStart &&
         !IsRsiOverbought &&
         NotInLongPosition;
 
-    protected override bool IsLongExitSignal =>
+    public override bool IsLongExitSignal =>
         _smallTimeframeMacd[Now - 1] > 0 &&
         _smallTimeframeMacd[Now] <= 0;
 
-    protected override bool IsShortEnterSignal =>
+    public override bool IsShortEnterSignal =>
         IsBearMacdStart &&
         !IsRsiOversold &&
         NotInShortPosition;
 
-    protected override bool IsShortExitSignal =>
+    public override bool IsShortExitSignal =>
         _smallTimeframeMacd[Now - 1] < 0 &&
         _smallTimeframeMacd[Now] >= 0;
 

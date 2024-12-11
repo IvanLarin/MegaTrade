@@ -61,21 +61,25 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     public virtual double ShortExitVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
-    protected bool InLongPosition => Trade.LongPositionInfo != null;
+    protected bool InLongPosition => Trade.InLongPosition;
 
     protected bool NotInLongPosition => !InLongPosition;
 
-    protected bool InShortPosition => Trade.ShortPositionInfo != null;
+    protected bool InShortPosition => Trade.InShortPosition;
 
     protected bool NotInShortPosition => !InShortPosition;
 
-    public virtual double? GetLongTake(IPositionInfo position) => null;
+    protected IPositionInfo LongPosition => Trade.LongPositionInfo;
 
-    public virtual double? GetLongStop(IPositionInfo position) => null;
+    protected IPositionInfo ShortPosition => Trade.ShortPositionInfo;
 
-    public virtual double? GetShortTake(IPositionInfo position) => null;
+    public virtual double? LongTake => null;
 
-    public virtual double? GetShortStop(IPositionInfo position) => null;
+    public virtual double? LongStop => null;
+
+    public virtual double? ShortTake => null;
+
+    public virtual double? ShortStop => null;
 
     protected int TradeFromBar { get; set; }
 

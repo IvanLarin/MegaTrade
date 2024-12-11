@@ -1,6 +1,4 @@
-﻿using TSLab.Script;
-
-namespace MegaTrade.Basic;
+﻿namespace MegaTrade.Basic;
 
 public interface ISignals
 {
@@ -20,11 +18,11 @@ public interface ISignals
 
     double ShortExitVolume { get; }
 
-    double? GetLongTake(IPositionInfo position);
+    double? LongTake { get; }
 
-    double? GetLongStop(IPositionInfo position);
+    double? LongStop { get; }
 
-    double? GetShortTake(IPositionInfo position);
+    double? ShortTake { get; }
 
-    double? GetShortStop(IPositionInfo position);
+    double? ShortStop { get; }
 }

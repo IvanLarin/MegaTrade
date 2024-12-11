@@ -31,17 +31,17 @@ public class CandleSeries : SystemBase
     private bool IsBearCandle(int barIndex) =>
         _timeframe.Bars[barIndex].Close < _timeframe.Bars[barIndex].Open;
 
-    public override double? GetLongTake(IPositionInfo position) =>
-        position.EntryPrice + AtrMultiplier * _atr[position.EntryBarNum.To(_timeframe)];
+    public override double? LongTake =>
+        LongPosition.EntryPrice + AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
 
-    public override double? GetLongStop(IPositionInfo position) =>
-        position.EntryPrice - AtrMultiplier * _atr[position.EntryBarNum.To(_timeframe)];
+    public override double? LongStop =>
+        LongPosition.EntryPrice - AtrMultiplier * _atr[LongPosition.EntryBarNum.To(_timeframe)];
 
-    public override double? GetShortTake(IPositionInfo position) =>
-        position.EntryPrice - AtrMultiplier * _atr[position.EntryBarNum.To(_timeframe)];
+    public override double? ShortTake =>
+        ShortPosition.EntryPrice - AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
 
-    public override double? GetShortStop(IPositionInfo position) =>
-        position.EntryPrice + AtrMultiplier * _atr[position.EntryBarNum.To(_timeframe)];
+    public override double? ShortStop =>
+        ShortPosition.EntryPrice + AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
 
     public void Execute(ISecurity security, ISecurity timeframe)
     {

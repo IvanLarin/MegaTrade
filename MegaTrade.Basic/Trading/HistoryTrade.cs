@@ -1,38 +1,42 @@
-﻿using TSLab.Script;
+﻿using MegaTrade.Basic.Trading.Position;
 
 namespace MegaTrade.Basic.Trading;
 
 internal class HistoryTrade : TradeBase
 {
-    protected override void UpdateNow()
+    protected override void UpdateLongPosition()
     {
-        _longPosition = NextLongPosition is { IsActive: true } ? NextLongPosition : null;
+        var position = BasicTimeframe.Positions.GetLastLongPositionActive(OnTheNextCandle);
 
-        _shortPosition = NextShortPosition is { IsActive: true } ? NextShortPosition : null;
+        _longPosition = new MarketPosition(position)
+        {
+            BasicTimeframe = BasicTimeframe,
+            NowProvider = NowProvider
+        };
     }
 
-    protected override void UpdateNext()
+    protected override void UpdateShortPosition()
     {
-        if (IsLongEnter || IsLongExit || NextLongPosition != null)
-            _nextLongPosition = BasicTimeframe.Positions.GetLastLongPositionActive(OnTheNextCandle);
+        var position = BasicTimeframe.Positions.GetLastShortPositionActive(OnTheNextCandle);
 
-        if (IsShortEnter || IsShortExit || NextShortPosition != null)
-            _nextShortPosition = BasicTimeframe.Positions.GetLastLongPositionActive(OnTheNextCandle);
+        _longPosition = new MarketPosition(position)
+        {
+            BasicTimeframe = BasicTimeframe,
+            NowProvider = NowProvider
+        };
     }
 
-    private IPosition? _longPosition;
+    private IMarketPosition? _longPosition;
 
-    private IPosition? _shortPosition;
+    private IMarketPosition? _shortPosition;
 
-    protected override IPosition? LongPosition => _longPosition;
+    protected override IMarketPosition LongPosition => _longPosition ??= new NullMarketPosition
+    {
+        BasicTimeframe = BasicTimeframe
+    };
 
-    protected override IPosition? ShortPosition => _shortPosition;
-
-    private IPosition? _nextLongPosition;
-
-    private IPosition? _nextShortPosition;
-
-    protected override IPosition? NextLongPosition => _nextLongPosition;
-
-    protected override IPosition? NextShortPosition => _nextShortPosition;
+    protected override IMarketPosition ShortPosition => _shortPosition ??= new NullMarketPosition
+    {
+        BasicTimeframe = BasicTimeframe
+    };
 }

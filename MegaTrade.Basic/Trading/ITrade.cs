@@ -6,9 +6,13 @@ internal interface ITrade
 {
     void Do();
 
-    IPositionInfo? LongPositionInfo { get; }
+    IPositionInfo LongPositionInfo { get; }
 
-    IPositionInfo? ShortPositionInfo { get; }
+    IPositionInfo ShortPositionInfo { get; }
+
+    bool InLongPosition { get; }
+
+    bool InShortPosition { get; }
 
     bool IsLongEnter { get; }
 

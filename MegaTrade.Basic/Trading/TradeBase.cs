@@ -1,4 +1,5 @@
 ﻿using MegaTrade.Basic.Gapping;
+using MegaTrade.Basic.Trading.Position;
 using MegaTrade.Common.Extensions;
 using TSLab.Script;
 
@@ -8,8 +9,6 @@ internal abstract class TradeBase : ITrade
 {
     public void Do()
     {
-        UpdateNow();
-
         if (IsLongEnter)
             EnterLongAtMarket();
 
@@ -21,8 +20,6 @@ internal abstract class TradeBase : ITrade
 
         if (IsShortExit)
             ExitShortAtMarket();
-
-        UpdateNext();
 
         DoLongStops();
 
@@ -54,9 +51,12 @@ internal abstract class TradeBase : ITrade
         var lotsInPosition = LotsInLongPosition;
 
         if (lotsInPosition.IsEqualTo(0))
+        {
             BasicTimeframe.Positions.BuyAtMarket(OnTheNextCandle, LongEnterLots, PositionNames.LongEnterName);
+            UpdateLongPosition();
+        }
         else
-            LongPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition + LongEnterLots,
+            LongPosition.ChangeAtMarket(OnTheNextCandle, lotsInPosition + LongEnterLots,
                 PositionNames.LongIncreaseName);
     }
 
@@ -65,9 +65,9 @@ internal abstract class TradeBase : ITrade
         var lotsInPosition = LotsInLongPosition;
 
         if (lotsInPosition.IsLessOrEqualTo(LongExitLots))
-            LongPosition?.CloseAtMarket(OnTheNextCandle, PositionNames.LongExitName);
+            LongPosition.CloseAtMarket(OnTheNextCandle, PositionNames.LongExitName);
         else
-            LongPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition - LongExitLots,
+            LongPosition.ChangeAtMarket(OnTheNextCandle, lotsInPosition - LongExitLots,
                 PositionNames.LongDecreaseName);
     }
 
@@ -76,9 +76,12 @@ internal abstract class TradeBase : ITrade
         var lotsInPosition = LotsInShortPosition;
 
         if (lotsInPosition.IsEqualTo(0))
+        {
             BasicTimeframe.Positions.SellAtMarket(OnTheNextCandle, ShortEnterLots, PositionNames.ShortEnterName);
+            UpdateShortPosition();
+        }
         else
-            ShortPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition + ShortEnterLots,
+            ShortPosition.ChangeAtMarket(OnTheNextCandle, lotsInPosition + ShortEnterLots,
                 PositionNames.ShortIncreaseName);
     }
 
@@ -87,9 +90,9 @@ internal abstract class TradeBase : ITrade
         var lotsInPosition = LotsInShortPosition;
 
         if (lotsInPosition.IsLessOrEqualTo(ShortExitLots))
-            ShortPosition?.CloseAtMarket(OnTheNextCandle, PositionNames.ShortExitName);
+            ShortPosition.CloseAtMarket(OnTheNextCandle, PositionNames.ShortExitName);
         else
-            ShortPosition?.ChangeAtMarket(OnTheNextCandle, lotsInPosition - ShortExitLots,
+            ShortPosition.ChangeAtMarket(OnTheNextCandle, lotsInPosition - ShortExitLots,
                 PositionNames.ShortDecreaseName);
     }
 
@@ -103,69 +106,51 @@ internal abstract class TradeBase : ITrade
 
     private void DoLongStops()
     {
-        if (TradeRules.IsLongTrade && NextLongPosition != null && !AntiGap.IsLastCandleOfSession)
+        if (TradeRules.IsLongTrade && LongPosition.IsActive && !AntiGap.IsLastCandleOfSession)
         {
-            var positionInfo = new ReturningFromTheFuture(NextLongPosition)
-            {
-                NowProvider = NowProvider,
-                BasicTimeframe = BasicTimeframe
-            };
-
-            var take = Signals.GetLongTake(positionInfo);
-            var stop = Signals.GetLongStop(positionInfo);
-
-            if (take.HasValue)
-                NextLongPosition.CloseAtProfit(OnTheNextCandle, take.Value,
+            if (Signals.LongTake.HasValue)
+                LongPosition.CloseAtProfit(OnTheNextCandle, Signals.LongTake.Value,
                     PositionNames.LongTakeProfit);
 
-            if (stop.HasValue)
-                NextLongPosition.CloseAtStop(OnTheNextCandle, stop.Value,
+            if (Signals.LongStop.HasValue)
+                LongPosition.CloseAtStop(OnTheNextCandle, Signals.LongStop.Value,
                     PositionNames.LongStopLoss);
         }
     }
 
     private void DoShortStops()
     {
-        if (TradeRules.IsShortTrade && NextShortPosition != null && !AntiGap.IsLastCandleOfSession)
+        if (TradeRules.IsShortTrade && ShortPosition.IsActive && !AntiGap.IsLastCandleOfSession)
         {
-            var positionInfo = new ReturningFromTheFuture(NextShortPosition)
-            {
-                NowProvider = NowProvider,
-                BasicTimeframe = BasicTimeframe
-            };
-
-            var take = Signals.GetShortTake(positionInfo);
-            var stop = Signals.GetShortStop(positionInfo);
-
-            if (take.HasValue)
-                NextShortPosition.CloseAtProfit(OnTheNextCandle, take.Value,
+            if (Signals.ShortTake.HasValue)
+                ShortPosition.CloseAtProfit(OnTheNextCandle, Signals.ShortTake.Value,
                     PositionNames.ShortTakeProfit);
 
-            if (stop.HasValue)
-                NextShortPosition.CloseAtStop(OnTheNextCandle, stop.Value,
+            if (Signals.ShortStop.HasValue)
+                ShortPosition.CloseAtStop(OnTheNextCandle, Signals.ShortStop.Value,
                     PositionNames.ShortStopLoss);
         }
     }
 
-    private double LotsInLongPosition => LongPosition?.Shares ?? 0;
+    private double LotsInLongPosition => LongPosition.Shares;
 
-    private double LotsInShortPosition => ShortPosition?.Shares ?? 0;
+    private double LotsInShortPosition => ShortPosition.Shares;
 
-    protected abstract void UpdateNow();
+    protected abstract void UpdateLongPosition();
 
-    protected abstract void UpdateNext();
+    protected abstract void UpdateShortPosition();
 
-    protected abstract IPosition? LongPosition { get; }
+    protected abstract IMarketPosition LongPosition { get; }
 
-    protected abstract IPosition? ShortPosition { get; }
+    protected abstract IMarketPosition ShortPosition { get; }
 
-    protected abstract IPosition? NextLongPosition { get; }
+    public IPositionInfo LongPositionInfo => LongPosition;
 
-    protected abstract IPosition? NextShortPosition { get; }
+    public IPositionInfo ShortPositionInfo => ShortPosition;
 
-    public IPositionInfo? LongPositionInfo => LongPosition;
+    public bool InLongPosition => LongPosition.IsOpen;
 
-    public IPositionInfo? ShortPositionInfo => ShortPosition;
+    public bool InShortPosition => ShortPosition.IsOpen;
 
     private double ToLotsCount(double volume) => BasicTimeframe.RoundShares(volume / BasicTimeframe.LotSize);
 

@@ -14,7 +14,10 @@ internal class BasicDraw
         Paint.Trades(BasicTimeframe);
 
         Paint.Signal(Selector.Select(() => AntiGap.IsLastCandleOfSession || AntiGap.IsJustBeforeLastCandleOfSession),
-            "Антигэп");
+            "Антигэп", ScriptColors.LightSlateGray);
+
+        Paint.Signal(Selector.Select(() => true).Select(x => !x).ToArray(), "Меньше TradeFromBar",
+            ScriptColors.DarkGray);
 
         if (TradeRules.IsLongTrade)
         {

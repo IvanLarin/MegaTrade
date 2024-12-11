@@ -1,6 +1,6 @@
 ﻿using MegaTrade.Basic.Gapping;
+using MegaTrade.Basic.Indicating;
 using MegaTrade.Basic.Trading;
-using MegaTrade.Common;
 using MegaTrade.Common.Extensions;
 using MegaTrade.Draw;
 using System.ComponentModel;
@@ -12,15 +12,11 @@ namespace MegaTrade.Basic;
 [HandlerCategory("МегаСистемы")]
 public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, ISignals, ISelector
 {
-    protected void Setup(ISecurity security)
-    {
-        BasicTimeframe = security;
-        TradeFromBar = Context.TradeFromBar; //TODO
-    }
-
     protected void Run()
     {
-        for (var i = TradeFromBar; i < Context.BarsCount; i++)
+        DoSetup();
+
+        for (var i = Math.Max(TradeFromBar, Context.TradeFromBar); i < Context.BarsCount; i++)
         {
             Now = i;
 
@@ -35,6 +31,16 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         if (!Context.IsOptimization)
             DoDraw();
     }
+
+    private void DoSetup()
+    {
+        var setup = Setup();
+        BasicTimeframe = setup.BasicTimeframe;
+        TradeFromBar = setup.MinBarNumberLimits.Concat([Context.TradeFromBar]).Aggregate(Math.Max);
+    }
+
+
+    protected abstract Setup Setup();
 
     public int Now { get; private set; }
 
@@ -78,7 +84,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     public virtual double? ShortStop => null;
 
-    protected int TradeFromBar { get; set; }
+    private int TradeFromBar { get; set; }
 
     private IAntiGap? _antiGap;
 
@@ -145,13 +151,11 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         set => _context = value;
     }
 
-    private ISecurity? _security;
-
     protected ISecurity BasicTimeframe
     {
-        get => _security ?? throw new Exception("Забыли вызвать метод Setup");
-        private set => _security = value;
-    }
+        get;
+        private set;
+    } = null!;
 
     private ITrade? _trade;
 

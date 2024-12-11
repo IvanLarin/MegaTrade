@@ -43,24 +43,25 @@ public class CandleSeries : SystemBase
     public override double? ShortStop =>
         ShortPosition.EntryPrice + AtrMultiplier * _atr[ShortPosition.EntryBarNum.To(_timeframe)];
 
-    public void Execute(ISecurity security, ISecurity timeframe)
+    public void Execute(ISecurity basicTimeframe, ISecurity timeframe)
     {
-        Setup(security);
-        TradeFromBar = Math.Max((CandlesCount + AntiFuture) * timeframe.Interval, AtrPeriod); //TODO надо не устанавливать это, а делать ограничением снизу
-
+        _basicTimeframe = basicTimeframe;
         _timeframe = timeframe;
-
         _atr = Indicators.ATR(timeframe, AtrPeriod);
 
         Run();
     }
 
+    protected override Setup Setup() => new()
+    {
+        BasicTimeframe = _basicTimeframe,
+        MinBarNumberLimits = [CandlesCount * _timeframe.Interval, AtrPeriod]
+    };
+
     protected override void Draw() => Paint.Candles(BasicTimeframe).Candles(_timeframe);
 
-    private const int AntiFuture = 1;
-
+    private ISecurity _basicTimeframe = null!;
     private ISecurity _timeframe = null!;
-
     private IList<double> _atr = [];
 
     [HelperDescription("Число свечей в серии в одном направлении")]

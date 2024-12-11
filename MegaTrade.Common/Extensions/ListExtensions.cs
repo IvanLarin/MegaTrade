@@ -17,6 +17,6 @@ public static class ListExtensions
 
     public static T[] ToPoolArray<T>(this IList<T> source, IContext? context) => context.GetOrCreateArray(source);
 
-    public static IList<T> DecompressBy<T>(this IList<T> source, ISecurity bySecurity) where T : struct =>
-        bySecurity.Decompress(source, DecompressMethodWithDef.Default);
+    public static IList<T> DecompressTo<T>(this IList<T> source, ISecurity toTimeframe) where T : struct =>
+        toTimeframe.Decompress(source, DecompressMethodWithDef.Default);
 }

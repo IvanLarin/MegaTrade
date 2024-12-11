@@ -3,7 +3,7 @@ using MegaTrade.Common.Extensions;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 
-namespace MegaTrade.Common;
+namespace MegaTrade.Basic.Indicating;
 
 public class Indicators(IContext context) : IIndicators
 {
@@ -24,7 +24,7 @@ public class Indicators(IContext context) : IIndicators
 
     public IList<double> ATR(ISecurity source, int period) => Cache
         .Entry<IList<double>>("ATR", CacheKind.Memory, context, [source.CacheKey(), period])
-        .Calculate(() => new AverageTrueRangeNew()
+        .Calculate(() => new AverageTrueRangeNew
         {
             Period = period
         }.Execute(source));

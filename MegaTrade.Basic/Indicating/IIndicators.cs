@@ -1,6 +1,6 @@
 ﻿using TSLab.Script;
 
-namespace MegaTrade.Common;
+namespace MegaTrade.Basic.Indicating;
 
 public interface IIndicators
 {

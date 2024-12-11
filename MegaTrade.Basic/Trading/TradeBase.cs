@@ -56,8 +56,10 @@ internal abstract class TradeBase : ITrade
             UpdateLongPosition();
         }
         else
+        {
             LongPosition.ChangeAtMarket(OnTheNextCandle, lotsInPosition + LongEnterLots,
                 PositionNames.LongIncreaseName);
+        }
     }
 
     private void ExitLongAtMarket()
@@ -81,8 +83,10 @@ internal abstract class TradeBase : ITrade
             UpdateShortPosition();
         }
         else
+        {
             ShortPosition.ChangeAtMarket(OnTheNextCandle, lotsInPosition + ShortEnterLots,
                 PositionNames.ShortIncreaseName);
+        }
     }
 
     private void ExitShortAtMarket()
@@ -108,13 +112,15 @@ internal abstract class TradeBase : ITrade
     {
         if (TradeRules.IsLongTrade && LongPosition.IsActive && !AntiGap.IsLastCandleOfSession)
         {
-            if (Signals.LongTake.HasValue)
-                LongPosition.CloseAtProfit(OnTheNextCandle, Signals.LongTake.Value,
-                    PositionNames.LongTakeProfit);
-
             if (Signals.LongStop.HasValue)
                 LongPosition.CloseAtStop(OnTheNextCandle, Signals.LongStop.Value,
                     PositionNames.LongStopLoss);
+
+            if (!LongPosition.IsActive) return;
+
+            if (Signals.LongTake.HasValue)
+                LongPosition.CloseAtProfit(OnTheNextCandle, Signals.LongTake.Value,
+                    PositionNames.LongTakeProfit);
         }
     }
 
@@ -122,13 +128,15 @@ internal abstract class TradeBase : ITrade
     {
         if (TradeRules.IsShortTrade && ShortPosition.IsActive && !AntiGap.IsLastCandleOfSession)
         {
-            if (Signals.ShortTake.HasValue)
-                ShortPosition.CloseAtProfit(OnTheNextCandle, Signals.ShortTake.Value,
-                    PositionNames.ShortTakeProfit);
-
             if (Signals.ShortStop.HasValue)
                 ShortPosition.CloseAtStop(OnTheNextCandle, Signals.ShortStop.Value,
                     PositionNames.ShortStopLoss);
+
+            if (!ShortPosition.IsActive) return;
+
+            if (Signals.ShortTake.HasValue)
+                ShortPosition.CloseAtProfit(OnTheNextCandle, Signals.ShortTake.Value,
+                    PositionNames.ShortTakeProfit);
         }
     }
 

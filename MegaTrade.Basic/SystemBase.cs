@@ -3,7 +3,6 @@ using MegaTrade.Basic.Trading;
 using MegaTrade.Common;
 using MegaTrade.Common.Extensions;
 using MegaTrade.Draw;
-using MegaTrade.Draw.Palettes;
 using System.ComponentModel;
 using TSLab.Script;
 using TSLab.Script.Handlers;
@@ -11,15 +10,13 @@ using TSLab.Script.Handlers;
 namespace MegaTrade.Basic;
 
 [HandlerCategory("МегаСистемы")]
-public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, ISignals
+public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, ISignals, ISelector
 {
     protected void Setup(ISecurity security)
     {
         BasicTimeframe = security;
         TradeFromBar = Context.TradeFromBar; //TODO
     }
-
-    //TODO вынести всё рисовалово в рисовалово
 
     protected void Run()
     {
@@ -29,10 +26,10 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
             Trade.Do();
 
-            LongEnters[Now] = Trade.IsLongEnter;
-            LongExits[Now] = Trade.IsLongExit;
-            ShortEnters[Now] = Trade.IsShortEnter;
-            ShortExits[Now] = Trade.IsShortExit;
+            BasicDraw.LongEnters[Now] = Trade.IsLongEnter;
+            BasicDraw.LongExits[Now] = Trade.IsLongExit;
+            BasicDraw.ShortEnters[Now] = Trade.IsShortEnter;
+            BasicDraw.ShortExits[Now] = Trade.IsShortExit;
         }
 
         if (!Context.IsOptimization)
@@ -83,7 +80,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     protected int TradeFromBar { get; set; }
 
-    private AntiGap? _antiGap;
+    private IAntiGap? _antiGap;
 
     private IAntiGap AntiGap => _antiGap ??= new AntiGap
     {
@@ -92,69 +89,34 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         NowProvider = this
     };
 
-    private bool IsLastCandleOfSession => AntiGap.IsLastCandleOfSession;
+    private BasicDraw? _basicDraw;
 
-    private bool IsJustBeforeLastCandleOfSession => AntiGap.IsJustBeforeLastCandleOfSession;
-
-    private bool[]? _longEnterSignals; //TODO убрать рисовалово в отдельный класс
-
-    private bool[]? _longExitSignals;
-
-    private bool[]? _shortEnterSignals;
-
-    private bool[]? _shortExitSignals;
-
-    private bool[] LongEnters => _longEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
-
-    private bool[] LongExits => _longExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
-
-    private bool[] ShortEnters => _shortEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
-
-    private bool[] ShortExits => _shortExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
-
-    private IPaint? _paint;
-
-    protected IPaint Paint => _paint ??= AddPaint(BasicTimeframe.Symbol).DecimalPlaces(BasicTimeframe.Decimals);
-
-    private readonly IPalette _neutralPalette = new NeutralPalette();
-
-    protected IPaint AddPaint(string name) => new Paint
+    private BasicDraw BasicDraw => _basicDraw ??= new BasicDraw
     {
         Context = Context,
-        GraphName = name,
-        NeutralPalette = _neutralPalette,
-        BullPalette = new BullPalette(),
-        BearPalette = new BearPalette()
-    }.DecimalPlaces(2);
+        BasicTimeframe = BasicTimeframe,
+        AntiGap = AntiGap,
+        TradeRules = this,
+        Selector = this
+    };
+
+    protected IPaint Paint => BasicDraw.Paint;
+
+    protected IPaint AddPaint(string name) => BasicDraw.AddPaint(name);
 
     protected virtual bool IsBasicTimeframeDraw => true;
 
     private void DoDraw()
     {
-        //TODO убрать рисовалово в отдельный класс
-        Paint.Signal(Select(() => IsLastCandleOfSession || IsJustBeforeLastCandleOfSession), "Антигэп");
-
         if (IsBasicTimeframeDraw)
-            Paint.Candles(BasicTimeframe, BasicTimeframe.Symbol).DecimalPlaces(BasicTimeframe.Decimals);
+            BasicDraw.DrawBasicTimeframe();
 
-        if (IsLongTrade)
-        {
-            Paint.Signal(LongEnters, "Сигнал на вход в лонг", AnimalColor.Bull);
-            Paint.Signal(LongExits, "Сигнал на выход из лонга", AnimalColor.Bear);
-        }
-
-        if (IsShortTrade)
-        {
-            Paint.Signal(ShortEnters, "Сигнал на вход в шорт", AnimalColor.Bull);
-            Paint.Signal(ShortExits, "Сигнал на выход из шорта", AnimalColor.Bear);
-        }
+        BasicDraw.Draw();
 
         Draw();
-
-        Paint.Trades(BasicTimeframe);
     }
 
-    protected IList<T> Select<T>(Func<T> func) where T : struct
+    public IList<T> Select<T>(Func<T> func) where T : struct
     {
         T[] result = Context.GetOrCreateArray<T>(Context.BarsCount);
 

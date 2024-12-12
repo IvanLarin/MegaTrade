@@ -9,7 +9,15 @@ public static class Cache
 {
     private static readonly ConcurrentDictionary<string, object> Locks = new();
 
-    public static T Get<T>(string name, Func<T> calculate, object[] dependencies, IContext? ctx, CacheKind kind)
+    private static readonly AsyncLocal<IContext?> LocalContext = new();
+
+    public static IContext? Context
+    {
+        private get => LocalContext.Value;
+        set => LocalContext.Value = value;
+    }
+
+    public static T Get<T>(string name, Func<T> calculate, object[] dependencies, CacheKind kind)
     {
         var key = MakeKey(name, dependencies);
 
@@ -21,14 +29,7 @@ public static class Cache
         {
             if (Load(out var data2, kind)) return data2!;
 
-            var dt = DateTime.Now;
-
-            ctx?.Log($"Начинаю считать {key}");
-
             var result = calculate();
-
-            var ms = (int)((DateTime.Now - dt).TotalSeconds * 1000);
-            ctx?.Log($"{ms}мс. {key}");
 
             Save(result, kind);
 
@@ -41,7 +42,7 @@ public static class Cache
 
             if (theKind == CacheKind.Memory)
             {
-                var fromCache = ctx?.LoadObject(key);
+                var fromCache = Context?.LoadObject(key);
                 if (fromCache is not NotClearableContainer<T> dataFromCache) return false;
 
                 output = dataFromCache.Content;
@@ -50,7 +51,7 @@ public static class Cache
 
             if (theKind == CacheKind.Disk)
             {
-                var fromCache = ctx?.LoadObject(key, true);
+                var fromCache = Context?.LoadObject(key, true);
                 if (fromCache is not NotClearableContainer<T> dataFromCache) return false;
 
                 output = dataFromCache.Content;
@@ -78,14 +79,14 @@ public static class Cache
             switch (theKind)
             {
                 case CacheKind.Memory:
-                    ctx?.StoreObject(key, new NotClearableContainer<T>(value));
+                    Context?.StoreObject(key, new NotClearableContainer<T>(value));
                     break;
                 case CacheKind.Disk:
-                    ctx?.StoreObject(key, new NotClearableContainer<T>(value), true);
+                    Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
                     break;
                 case CacheKind.DiskAndMemory:
-                    ctx?.StoreObject(key, new NotClearableContainer<T>(value));
-                    ctx?.StoreObject(key, new NotClearableContainer<T>(value), true);
+                    Context?.StoreObject(key, new NotClearableContainer<T>(value));
+                    Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
                     break;
                 default: throw new NotImplementedException();
             }
@@ -95,6 +96,6 @@ public static class Cache
     private static string MakeKey(string name, object[] dependencies) =>
         $"{name}: {JsonConvert.SerializeObject(dependencies)}";
 
-    public static ICacheEntry<T> Entry<T>(string name, CacheKind kind, IContext? context, object[] dependencies) =>
-        new CacheEntry<T>(name, dependencies, context, kind);
+    public static ICacheEntry<T> Entry<T>(string name, CacheKind kind, object[] dependencies) =>
+        new CacheEntry<T>(name, dependencies, kind);
 }

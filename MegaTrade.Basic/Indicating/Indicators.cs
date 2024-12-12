@@ -5,10 +5,10 @@ using TSLab.Script.Handlers;
 
 namespace MegaTrade.Basic.Indicating;
 
-public class Indicators(IContext context) : IIndicators
+public class Indicators : IIndicators
 {
     public IList<double> MACD(IList<double> source, int smallPeriod, int bigPeriod) => Cache
-        .Entry<IList<double>>("MACD", CacheKind.Memory, context, [source.CacheKey(), smallPeriod, bigPeriod])
+        .Entry<IList<double>>("MACD", CacheKind.Memory, [source.CacheKey(), smallPeriod, bigPeriod])
         .Calculate(() => new MACDEx
         {
             Period1 = smallPeriod,
@@ -16,14 +16,14 @@ public class Indicators(IContext context) : IIndicators
         }.Execute(source));
 
     public IList<double> RSI(IList<double> source, int period) => Cache
-        .Entry<IList<double>>("RSI", CacheKind.Memory, context, [source.CacheKey(), period])
+        .Entry<IList<double>>("RSI", CacheKind.Memory, [source.CacheKey(), period])
         .Calculate(() => new RSI
         {
             Period = period
         }.Execute(source));
 
     public IList<double> ATR(ISecurity source, int period) => Cache
-        .Entry<IList<double>>("ATR", CacheKind.Memory, context, [source.CacheKey(), period])
+        .Entry<IList<double>>("ATR", CacheKind.Memory, [source.CacheKey(), period])
         .Calculate(() => new AverageTrueRangeNew
         {
             Period = period

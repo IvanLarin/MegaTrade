@@ -1,6 +1,7 @@
 ﻿using MegaTrade.Basic.Gapping;
 using MegaTrade.Basic.Indicating;
 using MegaTrade.Basic.Trading;
+using MegaTrade.Common.Caching;
 using MegaTrade.Common.Extensions;
 using MegaTrade.Draw;
 using System.ComponentModel;
@@ -37,8 +38,9 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         var setup = Setup();
         BasicTimeframe = setup.BasicTimeframe;
         TradeFromBar = setup.MinBarNumberLimits.Concat([Context.TradeFromBar]).Aggregate(Math.Max);
-    }
 
+        Cache.Context = Context;
+    }
 
     protected abstract Setup Setup();
 
@@ -141,7 +143,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     private IIndicators? _indicatorFactory;
 
-    protected IIndicators Indicators => _indicatorFactory ??= new Indicators(Context);
+    protected IIndicators Indicators => _indicatorFactory ??= new Indicators();
 
     private IContext? _context;
 

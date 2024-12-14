@@ -18,8 +18,8 @@ public static class ListExtensions
 
     public static T[] ToPoolArray<T>(this IList<T> source, IContext? context) => context.GetOrCreateArray(source);
 
-    public static IList<T> DecompressTo<T>(this IList<T> source, ISecurity toTimeframe) where T : struct =>
+    public static IList<T> DecompressBy<T>(this IList<T> source, ISecurity byTimeframe) where T : struct =>
         Cache
-            .Entry<IList<T>>("Decompressed", CacheKind.Memory, [source.CacheKey(), toTimeframe.CacheKey()])
-            .Calculate(() => toTimeframe.Decompress(source, DecompressMethodWithDef.Default));
+            .Entry<IList<T>>("Decompressed", CacheKind.Memory, [source.CacheKey(), byTimeframe.CacheKey()])
+            .Calculate(() => byTimeframe.Decompress(source, DecompressMethodWithDef.Default));
 }

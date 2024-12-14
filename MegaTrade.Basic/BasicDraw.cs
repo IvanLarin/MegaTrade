@@ -32,10 +32,6 @@ internal class BasicDraw
         }
     }
 
-    public void DrawBasicTimeframe() =>
-        Paint.Candles(BasicTimeframe, BasicTimeframe.Symbol).DecimalPlaces(BasicTimeframe.Decimals);
-
-
     public IPaint AddPaint(string name) => new Paint
     {
         Context = Context,

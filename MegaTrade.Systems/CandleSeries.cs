@@ -1,5 +1,6 @@
 using MegaTrade.Basic;
 using MegaTrade.Common.Extensions;
+using MegaTrade.Indicators;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
@@ -47,7 +48,7 @@ public class CandleSeries : SystemBase
     {
         _basicTimeframe = basicTimeframe;
         _timeframe = timeframe;
-        _atr = Indicators.ATR(timeframe, AtrPeriod);
+        _atr = timeframe.ATR(AtrPeriod);
 
         Run();
     }
@@ -58,7 +59,7 @@ public class CandleSeries : SystemBase
         MinBarNumberLimits = [CandlesCount * _timeframe.Interval, AtrPeriod]
     };
 
-    protected override void Draw() => Paint.Candles(BasicTimeframe).Candles(_timeframe);
+    protected override void Draw() => Paint.Candles(_basicTimeframe).Candles(_timeframe);
 
     private ISecurity _basicTimeframe = null!;
     private ISecurity _timeframe = null!;

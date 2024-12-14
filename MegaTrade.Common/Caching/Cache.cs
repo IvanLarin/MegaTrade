@@ -1,21 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Concurrent;
 using TSLab.DataSource;
-using TSLab.Script.Handlers;
 
 namespace MegaTrade.Common.Caching;
 
 public static class Cache
 {
     private static readonly ConcurrentDictionary<string, object> Locks = new();
-
-    private static readonly AsyncLocal<IContext?> LocalContext = new();
-
-    public static IContext? Context
-    {
-        private get => LocalContext.Value;
-        set => LocalContext.Value = value;
-    }
 
     public static T Get<T>(string name, Func<T> calculate, object[] dependencies, CacheKind kind)
     {
@@ -42,7 +33,7 @@ public static class Cache
 
             if (theKind == CacheKind.Memory)
             {
-                var fromCache = Context?.LoadObject(key);
+                var fromCache = Local.Context?.LoadObject(key);
                 if (fromCache is not NotClearableContainer<T> dataFromCache) return false;
 
                 output = dataFromCache.Content;
@@ -51,7 +42,7 @@ public static class Cache
 
             if (theKind == CacheKind.Disk)
             {
-                var fromCache = Context?.LoadObject(key, true);
+                var fromCache = Local.Context?.LoadObject(key, true);
                 if (fromCache is not NotClearableContainer<T> dataFromCache) return false;
 
                 output = dataFromCache.Content;
@@ -79,14 +70,14 @@ public static class Cache
             switch (theKind)
             {
                 case CacheKind.Memory:
-                    Context?.StoreObject(key, new NotClearableContainer<T>(value));
+                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value));
                     break;
                 case CacheKind.Disk:
-                    Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
+                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
                     break;
                 case CacheKind.DiskAndMemory:
-                    Context?.StoreObject(key, new NotClearableContainer<T>(value));
-                    Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
+                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value));
+                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
                     break;
                 default: throw new NotImplementedException();
             }

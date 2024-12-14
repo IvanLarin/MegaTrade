@@ -1,7 +1,6 @@
 ﻿using MegaTrade.Basic.Gapping;
-using MegaTrade.Basic.Indicating;
 using MegaTrade.Basic.Trading;
-using MegaTrade.Common.Caching;
+using MegaTrade.Common;
 using MegaTrade.Common.Extensions;
 using MegaTrade.Draw;
 using System.ComponentModel;
@@ -39,7 +38,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         BasicTimeframe = setup.BasicTimeframe;
         TradeFromBar = setup.MinBarNumberLimits.Concat([Context.TradeFromBar]).Aggregate(Math.Max);
 
-        Cache.Context = Context;
+        Local.Context = Context;
     }
 
     protected abstract Setup Setup();
@@ -112,13 +111,8 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     protected IPaint AddPaint(string name) => BasicDraw.AddPaint(name);
 
-    protected virtual bool IsBasicTimeframeDraw => true;
-
     private void DoDraw()
     {
-        if (IsBasicTimeframeDraw)
-            BasicDraw.DrawBasicTimeframe();
-
         BasicDraw.Draw();
 
         Draw();
@@ -141,10 +135,6 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
     }
 
-    private IIndicators? _indicatorFactory;
-
-    protected IIndicators Indicators => _indicatorFactory ??= new Indicators();
-
     private IContext? _context;
 
     public IContext Context
@@ -153,11 +143,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         set => _context = value;
     }
 
-    protected ISecurity BasicTimeframe
-    {
-        get;
-        private set;
-    } = null!;
+    private ISecurity BasicTimeframe { get; set; } = null!;
 
     private ITrade? _trade;
 

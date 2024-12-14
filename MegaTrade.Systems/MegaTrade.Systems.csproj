@@ -4,11 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MegaTrade.Basic\MegaTrade.Basic.csproj" />
     <ProjectReference Include="..\MegaTrade.Common\MegaTrade.Common.csproj" />
+    <ProjectReference Include="..\MegaTrade.Indicators\MegaTrade.Indicators.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +30,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*&quot; &quot;%25LOCALAPPDATA%25\TSLab\TSLab 2.0\Handlers&quot; /E /H /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)*&quot; &quot;%25LOCALAPPDATA%25\TSLab\TSLab 2.0\Handlers&quot; /E /H /Y /C&#xD;&#xA;xcopy &quot;$(TargetDir)*&quot; &quot;C:\Program Files\TSLab\TSLab 2.2&quot; /E /H /Y /C" />
   </Target>
 
 </Project>

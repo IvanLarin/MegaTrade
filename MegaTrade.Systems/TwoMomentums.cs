@@ -1,6 +1,7 @@
 ﻿using MegaTrade.Basic;
 using MegaTrade.Common.Extensions;
 using MegaTrade.Draw;
+using MegaTrade.Indicators;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
@@ -66,21 +67,17 @@ public class TwoMomentums : SystemBase
         _smallTimeframeClosePrices = smallTimeframe.ClosePrices;
         _bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
-        _smallTimeframeMacd = Indicators
-            .MACD(_smallTimeframeClosePrices, SmallMacdOfSmall, BigMacdOfSmall)
-            .DecompressTo(smallTimeframe);
+        _smallTimeframeMacd = _smallTimeframeClosePrices.MACD(SmallMacdOfSmall, BigMacdOfSmall)
+            .DecompressBy(smallTimeframe);
 
-        _bigTimeframeMacd = Indicators
-            .MACD(_bigTimeframeClosePrices, SmallMacdOfBig, BigMacdOfBig)
-            .DecompressTo(bigTimeframe);
+        _bigTimeframeMacd = _bigTimeframeClosePrices.MACD(SmallMacdOfBig, BigMacdOfBig)
+            .DecompressBy(bigTimeframe);
 
-        _smallTimeframeRsi = Indicators
-            .RSI(_smallTimeframeClosePrices, RsiPeriodOfSmall)
-            .DecompressTo(smallTimeframe);
+        _smallTimeframeRsi = _smallTimeframeClosePrices.RSI(RsiPeriodOfSmall)
+            .DecompressBy(smallTimeframe);
 
-        _bigTimeframeRsi = Indicators
-            .RSI(_bigTimeframeClosePrices, RsiPeriodOfBig)
-            .DecompressTo(bigTimeframe);
+        _bigTimeframeRsi = _bigTimeframeClosePrices.RSI(RsiPeriodOfBig)
+            .DecompressBy(bigTimeframe);
 
         Run();
     }
@@ -91,8 +88,6 @@ public class TwoMomentums : SystemBase
         MinBarNumberLimits =
             [SmallMacdOfSmall, BigMacdOfSmall, SmallMacdOfBig, BigMacdOfBig, RsiPeriodOfSmall, RsiPeriodOfBig]
     };
-
-    protected override bool IsBasicTimeframeDraw => false;
 
     protected override void Draw()
     {

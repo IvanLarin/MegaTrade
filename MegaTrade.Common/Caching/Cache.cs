@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Concurrent;
-using TSLab.DataSource;
 
 namespace MegaTrade.Common.Caching;
 
@@ -34,18 +33,18 @@ public static class Cache
             if (theKind == CacheKind.Memory)
             {
                 var fromCache = Local.Context?.LoadObject(key);
-                if (fromCache is not NotClearableContainer<T> dataFromCache) return false;
+                if (fromCache is not T dataFromCache) return false;
 
-                output = dataFromCache.Content;
+                output = dataFromCache;
                 return true;
             }
 
             if (theKind == CacheKind.Disk)
             {
                 var fromCache = Local.Context?.LoadObject(key, true);
-                if (fromCache is not NotClearableContainer<T> dataFromCache) return false;
+                if (fromCache is not T dataFromCache) return false;
 
-                output = dataFromCache.Content;
+                output = dataFromCache;
                 return true;
             }
 
@@ -70,14 +69,14 @@ public static class Cache
             switch (theKind)
             {
                 case CacheKind.Memory:
-                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value));
+                    Local.Context?.StoreObject(key, value);
                     break;
                 case CacheKind.Disk:
-                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
+                    Local.Context?.StoreObject(key, value, true);
                     break;
                 case CacheKind.DiskAndMemory:
-                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value));
-                    Local.Context?.StoreObject(key, new NotClearableContainer<T>(value), true);
+                    Local.Context?.StoreObject(key, value);
+                    Local.Context?.StoreObject(key, value, true);
                     break;
                 default: throw new NotImplementedException();
             }

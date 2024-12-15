@@ -2,7 +2,7 @@
 
 namespace MegaTrade.Basic.Trading;
 
-internal interface ITrade
+internal interface ITrade : ITradeSignals
 {
     void Do();
 
@@ -13,12 +13,5 @@ internal interface ITrade
     bool InLongPosition { get; }
 
     bool InShortPosition { get; }
-
-    bool IsLongEnter { get; }
-
-    bool IsLongExit { get; }
-
-    bool IsShortEnter { get; }
-
-    bool IsShortExit { get; }
 }
+

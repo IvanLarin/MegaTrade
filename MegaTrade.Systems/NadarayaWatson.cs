@@ -15,15 +15,15 @@ namespace MegaTrade.Systems;
 [OutputsCount(0)]
 public class NadarayaWatson : SystemBase
 {
-    public override bool IsLongEnterSignal =>
+    public override bool IsLongEnter =>
         NotInLongPosition && _closePrices[Now - 1] <= _nadarayaDown[Now - 1] && _closePrices[Now] > _nadarayaDown[Now];
 
-    public override bool IsLongExitSignal =>
+    public override bool IsLongExit =>
         _closePrices[Now - 1] >= _nadarayaUp[Now - 1] && _closePrices[Now] < _nadarayaUp[Now];
 
-    public override bool IsShortEnterSignal => NotInShortPosition && _closePrices[Now - 1] >= _nadarayaUp[Now - 1] && _closePrices[Now] < _nadarayaUp[Now];
+    public override bool IsShortEnter => NotInShortPosition && _closePrices[Now - 1] >= _nadarayaUp[Now - 1] && _closePrices[Now] < _nadarayaUp[Now];
 
-    public override bool IsShortExitSignal => _closePrices[Now - 1] <= _nadarayaDown[Now - 1] && _closePrices[Now] > _nadarayaDown[Now];
+    public override bool IsShortExit => _closePrices[Now - 1] <= _nadarayaDown[Now - 1] && _closePrices[Now] > _nadarayaDown[Now];
 
     public void Execute(ISecurity basicTimeframe, ISecurity timeframe)
     {

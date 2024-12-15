@@ -5,9 +5,9 @@ using MegaTrade.Draw.Palettes;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 
-namespace MegaTrade.Basic;
+namespace MegaTrade.Basic.Drawing;
 
-internal class BasicDraw
+internal class BasicDraw : IBasicDraw
 {
     public void Draw()
     {
@@ -32,6 +32,14 @@ internal class BasicDraw
         }
     }
 
+    public void PushSignals()
+    {
+        LongEnters[Now] = TradeSignals.IsLongEnter;
+        LongExits[Now] = TradeSignals.IsLongExit;
+        ShortEnters[Now] = TradeSignals.IsShortEnter;
+        ShortExits[Now] = TradeSignals.IsShortExit;
+    }
+
     public IPaint AddPaint(string name) => new Paint
     {
         Context = Context,
@@ -49,13 +57,13 @@ internal class BasicDraw
 
     private bool[]? _shortExitSignals;
 
-    public bool[] LongEnters => _longEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] LongEnters => _longEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
-    public bool[] LongExits => _longExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] LongExits => _longExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
-    public bool[] ShortEnters => _shortEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] ShortEnters => _shortEnterSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
-    public bool[] ShortExits => _shortExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
+    private bool[] ShortExits => _shortExitSignals ??= Context.GetOrCreateArray<bool>(Context.BarsCount);
 
     private IPaint? _paint;
 
@@ -72,4 +80,10 @@ internal class BasicDraw
     public required IAntiGap AntiGap { private get; init; }
 
     public required ITradeRules TradeRules { private get; init; }
+
+    public required ITradeSignals TradeSignals { private get; init; }
+
+    public required INowProvider NowProvider { private get; init; }
+
+    private int Now => NowProvider.Now;
 }

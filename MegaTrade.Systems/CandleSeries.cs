@@ -14,13 +14,13 @@ namespace MegaTrade.Systems;
 [OutputsCount(0)]
 public class CandleSeries : SystemBase
 {
-    public override bool IsLongEnterSignal =>
+    public override bool IsLongEnter =>
         NotInLongPosition &&
         Enumerable.Range(0, CandlesCount)
             .Select((_, i) => IsBearCandle(Now.To(_timeframe) - i))
             .Aggregate((a, b) => a && b);
 
-    public override bool IsShortEnterSignal =>
+    public override bool IsShortEnter =>
         NotInShortPosition &&
         Enumerable.Range(0, CandlesCount)
             .Select((_, i) => IsBullCandle(Now.To(_timeframe) - i))

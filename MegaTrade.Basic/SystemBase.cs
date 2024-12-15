@@ -1,4 +1,5 @@
-﻿using MegaTrade.Basic.Gapping;
+﻿using MegaTrade.Basic.Drawing;
+using MegaTrade.Basic.Gapping;
 using MegaTrade.Basic.Trading;
 using MegaTrade.Common;
 using MegaTrade.Common.Extensions;
@@ -19,17 +20,11 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         for (var i = Math.Max(TradeFromBar, Context.TradeFromBar); i < Context.BarsCount; i++)
         {
             Now = i;
-
             Trade.Do();
-
-            BasicDraw.LongEnters[Now] = Trade.IsLongEnter;
-            BasicDraw.LongExits[Now] = Trade.IsLongExit;
-            BasicDraw.ShortEnters[Now] = Trade.IsShortEnter;
-            BasicDraw.ShortExits[Now] = Trade.IsShortExit;
+            BasicDraw.PushSignals();
         }
 
-        if (!Context.IsOptimization)
-            DoDraw();
+        DoDraw();
     }
 
     private void DoSetup()
@@ -43,13 +38,13 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
 
     public int Now { get; private set; }
 
-    public virtual bool IsLongEnterSignal => false;
+    public virtual bool IsLongEnter => false;
 
-    public virtual bool IsLongExitSignal => false;
+    public virtual bool IsLongExit => false;
 
-    public virtual bool IsShortEnterSignal => false;
+    public virtual bool IsShortEnter => false;
 
-    public virtual bool IsShortExitSignal => false;
+    public virtual bool IsShortExit => false;
 
     public virtual double LongEnterVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
@@ -94,16 +89,20 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         NowProvider = this
     };
 
-    private BasicDraw? _basicDraw;
+    private IBasicDraw? _basicDraw;
 
-    private BasicDraw BasicDraw => _basicDraw ??= new BasicDraw
-    {
-        Context = Context,
-        BasicTimeframe = BasicTimeframe,
-        AntiGap = AntiGap,
-        TradeRules = this,
-        Selector = this
-    };
+    private IBasicDraw BasicDraw => _basicDraw ??= Context.IsOptimization
+        ? new NullBasicDraw()
+        : new BasicDraw
+        {
+            Context = Context,
+            BasicTimeframe = BasicTimeframe,
+            AntiGap = AntiGap,
+            TradeRules = this,
+            Selector = this,
+            NowProvider = this,
+            TradeSignals = Trade
+        };
 
     protected IPaint Paint => BasicDraw.Paint;
 
@@ -112,7 +111,6 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     private void DoDraw()
     {
         BasicDraw.Draw();
-
         Draw();
     }
 

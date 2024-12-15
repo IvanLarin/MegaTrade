@@ -1,15 +1,7 @@
 ﻿namespace MegaTrade.Basic;
 
-public interface ISignals
+public interface ISignals : ITradeSignals
 {
-    bool IsLongEnterSignal { get; }
-
-    bool IsLongExitSignal { get; }
-
-    bool IsShortEnterSignal { get; }
-
-    bool IsShortExitSignal { get; }
-
     double LongEnterVolume { get; }
 
     double LongExitVolume { get; }

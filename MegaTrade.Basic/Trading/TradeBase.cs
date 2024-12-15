@@ -27,22 +27,22 @@ internal abstract class TradeBase : ITrade
     }
 
     public bool IsLongEnter =>
-        TradeRules.IsLongTrade && Signals.IsLongEnterSignal &&
+        TradeRules.IsLongTrade && Signals.IsLongEnter &&
         AntiGap is { IsLastCandleOfSession: false, IsJustBeforeLastCandleOfSession: false } &&
         LongEnterLots.IsMoreThan(0);
 
     public bool IsLongExit =>
-        TradeRules.IsLongTrade && Signals.IsLongExitSignal &&
+        TradeRules.IsLongTrade && Signals.IsLongExit &&
         !AntiGap.IsLastCandleOfSession &&
         LongExitLots.IsMoreThan(0);
 
     public bool IsShortEnter =>
-        TradeRules.IsShortTrade && Signals.IsShortEnterSignal &&
+        TradeRules.IsShortTrade && Signals.IsShortEnter &&
         AntiGap is { IsLastCandleOfSession: false, IsJustBeforeLastCandleOfSession: false } &&
         ShortEnterLots.IsMoreThan(0);
 
     public bool IsShortExit =>
-        TradeRules.IsShortTrade && Signals.IsShortExitSignal &&
+        TradeRules.IsShortTrade && Signals.IsShortExit &&
         !AntiGap.IsLastCandleOfSession &&
         ShortExitLots.IsMoreThan(0);
 

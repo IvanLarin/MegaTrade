@@ -16,21 +16,21 @@ namespace MegaTrade.Systems;
 [OutputsCount(0)]
 public class TwoMomentums : SystemBase
 {
-    public override bool IsLongEnterSignal =>
+    public override bool IsLongEnter =>
         IsBullMacdStart &&
         !IsRsiOverbought &&
         NotInLongPosition;
 
-    public override bool IsLongExitSignal =>
+    public override bool IsLongExit =>
         _smallTimeframeMacd[Now - 1] > 0 &&
         _smallTimeframeMacd[Now] <= 0;
 
-    public override bool IsShortEnterSignal =>
+    public override bool IsShortEnter =>
         IsBearMacdStart &&
         !IsRsiOversold &&
         NotInShortPosition;
 
-    public override bool IsShortExitSignal =>
+    public override bool IsShortExit =>
         _smallTimeframeMacd[Now - 1] < 0 &&
         _smallTimeframeMacd[Now] >= 0;
 
@@ -104,7 +104,7 @@ public class TwoMomentums : SystemBase
         .Function(_bigTimeframeMacd, "MACD большего таймфрейма")
         .Signal(Select(() => IsBullMacdStart),
             "Бычий разворот меньшего таймрейма в направлении большего таймрейма", AnimalColor.Bull)
-        .Signal(Select(() => IsLongExitSignal), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
+        .Signal(Select(() => IsLongExit), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
 
     private void DrawRsi() => AddPaint("RSI")
         .Bound(0, 100)

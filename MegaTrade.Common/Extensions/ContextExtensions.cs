@@ -14,5 +14,5 @@ public static class ContextExtensions
         context.GetOrCreateArray<T>(source.Count).FillFrom(source);
 
     public static T[] GetOrCreateArray<T>(this IContext? context, IEnumerable<T> source) =>
-        context.GetOrCreateArray((IList<T>)source.ToList());
+        context.GetOrCreateArray((IList<T>)source.ToArray());
 }

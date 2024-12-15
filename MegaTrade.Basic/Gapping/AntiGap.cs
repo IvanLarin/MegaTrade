@@ -15,7 +15,7 @@ internal class AntiGap : IAntiGap
     private bool[]? _tradeStops;
 
     public bool[] TradeStops => _tradeStops ??=
-        Cache.Entry<bool[]>(nameof(TradeStops), CacheKind.Memory, [Security.CacheKey()])
+        Cache.Entry<bool[]>($"{nameof(AntiGap)}.{nameof(TradeStops)}", CacheKind.Memory, [Security.CacheKey()])
             .Calculate(() => Bars.Select((_, i) => IsStop(i)).ToArray());
 
     private bool IsStop(int i) => i == 0 && i <= FirstSessionStart || IsEndOfSession(i);

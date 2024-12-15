@@ -1,5 +1,6 @@
 ﻿using MegaTrade.Basic;
 using MegaTrade.Common.Extensions;
+using MegaTrade.Draw;
 using MegaTrade.Indicators;
 using TSLab.Script;
 using TSLab.Script.Handlers;
@@ -29,10 +30,10 @@ public class NadarayaWatson : SystemBase
         _basicTimeframe = basicTimeframe;
         _timeframe = timeframe;
         _closePrices = basicTimeframe.ClosePrices;
-        _nadarayaUp = timeframe.ClosePrices.NadarayaWatsonUp(Bandwidth, Multiplier, Range)
-            .DecompressBy(timeframe);
-        _nadarayaDown = timeframe.ClosePrices.NadarayaWatsonDown(Bandwidth, Multiplier, Range)
-            .DecompressBy(timeframe);
+        _nadarayaUp = timeframe.ClosePrices.NadarayaWatsonUpper(Bandwidth, Multiplier, Range)
+            .DecompressFrom(timeframe);
+        _nadarayaDown = timeframe.ClosePrices.NadarayaWatsonLower(Bandwidth, Multiplier, Range)
+            .DecompressFrom(timeframe);
 
         Run();
     }
@@ -46,8 +47,8 @@ public class NadarayaWatson : SystemBase
     protected override void Draw() => Paint
         .Candles(_basicTimeframe)
         .Candles(_timeframe)
-        .Function(_nadarayaUp, "Надарая-Ватсон")
-        .Function(_nadarayaDown, "Надарая-Ватсон");
+        .Function(_nadarayaUp, "Надарая-Ватсон", AnimalColor.Bull)
+        .Function(_nadarayaDown, "Надарая-Ватсон", AnimalColor.Bear);
 
     private ISecurity _basicTimeframe = null!;
     private ISecurity _timeframe = null!;

@@ -37,8 +37,6 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         var setup = Setup();
         BasicTimeframe = setup.BasicTimeframe;
         TradeFromBar = setup.MinBarNumberLimits.Concat([Context.TradeFromBar]).Aggregate(Math.Max);
-
-        Local.Context = Context;
     }
 
     protected abstract Setup Setup();
@@ -135,12 +133,10 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
     }
 
-    private IContext? _context;
-
     public IContext Context
     {
-        get => _context!;
-        set => _context = value;
+        get => Local.Context!;
+        set => Local.Context = value;
     }
 
     private ISecurity BasicTimeframe { get; set; } = null!;

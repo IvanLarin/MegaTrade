@@ -68,16 +68,16 @@ public class TwoMomentums : SystemBase
         _bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
         _smallTimeframeMacd = _smallTimeframeClosePrices.MACD(SmallMacdOfSmall, BigMacdOfSmall)
-            .DecompressBy(smallTimeframe);
+            .DecompressFrom(smallTimeframe);
 
         _bigTimeframeMacd = _bigTimeframeClosePrices.MACD(SmallMacdOfBig, BigMacdOfBig)
-            .DecompressBy(bigTimeframe);
+            .DecompressFrom(bigTimeframe);
 
         _smallTimeframeRsi = _smallTimeframeClosePrices.RSI(RsiPeriodOfSmall)
-            .DecompressBy(smallTimeframe);
+            .DecompressFrom(smallTimeframe);
 
         _bigTimeframeRsi = _bigTimeframeClosePrices.RSI(RsiPeriodOfBig)
-            .DecompressBy(bigTimeframe);
+            .DecompressFrom(bigTimeframe);
 
         Run();
     }

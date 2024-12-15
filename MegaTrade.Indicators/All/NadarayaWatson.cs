@@ -7,21 +7,9 @@ using MegaTrade.Common.Extensions;
 
 namespace MegaTrade.Indicators.All;
 
-internal class NadarayaWatson : Calculator<IList<double>>
+internal class NadarayaWatson : Calculator<(double[] nwe, double[] sae)>
 {
-    protected override IList<double> Calculate()
-    {
-        if (Source.Count == 0) return [];
-
-        var (nwe, sae) = GetNadaraya();
-
-        var result = nwe.Zip(sae, (average, error) =>
-            average + error * Multiplier * (int)Direction).ToArray();
-
-        return result;
-    }
-
-    private (float[] nwe, float[] sae) GetNadaraya()
+    protected override (double[] nwe, double[] sae) Calculate()
     {
         using var context = Context.Create(builder => builder.AllAccelerators());
 
@@ -48,8 +36,8 @@ internal class NadarayaWatson : Calculator<IList<double>>
 
         stream.Synchronize();
 
-        var nweResult = nweBuffer.GetAsArray1D();
-        var saeResult = saeBuffer.GetAsArray1D();
+        var nweResult = nweBuffer.GetAsArray1D().Select(x => (double)x).ToArray();
+        var saeResult = saeBuffer.GetAsArray1D().Select(x => (double)x).ToArray();
 
         return (nweResult, saeResult);
     }
@@ -135,7 +123,9 @@ internal class NadarayaWatson : Calculator<IList<double>>
         }
     }
 
-    private float[] Gauss => Cache.Entry<float[]>("Gauss", CacheKind.Memory, [Bandwidth]).Calculate(CalculateGauss);
+    private float[] Gauss =>
+        Cache.Entry<float[]>($"{nameof(NadarayaWatson)}.{nameof(Gauss)}", CacheKind.Memory, [Bandwidth])
+            .Calculate(CalculateGauss);
 
     private int GaussLength => (int)Math.Ceiling((float)Gauss.Length / 2);
 
@@ -166,10 +156,6 @@ internal class NadarayaWatson : Calculator<IList<double>>
     private float GaussFormula(int x) => (float)Math.Exp(-x * x / (2 * Bandwidth * Bandwidth));
 
     public required double Bandwidth { get; init; }
-
-    public required double Multiplier { get; init; }
-
-    public required Direction Direction { get; init; }
 
     public required IList<double> Source { get; init; }
 }

@@ -1,5 +1,4 @@
 ﻿using HashDepot;
-using MegaTrade.Common.Caching;
 using TSLab.DataSource;
 using TSLab.Script;
 using TSLab.Script.Handlers;
@@ -19,6 +18,5 @@ public static class ListExtensions
     public static T[] ToPoolArray<T>(this IList<T> source, IContext? context) => context.GetOrCreateArray(source);
 
     public static IList<T> DecompressFrom<T>(this IList<T> source, ISecurity fromTimeframe) where T : struct =>
-        Cache.Entry<IList<T>>(nameof(DecompressFrom), CacheKind.Memory, [source.CacheKey(), fromTimeframe.CacheKey()])
-            .Calculate(() => fromTimeframe.Decompress(source, DecompressMethodWithDef.Default).ToArray());
+        fromTimeframe.Decompress(source, DecompressMethodWithDef.Default);
 }

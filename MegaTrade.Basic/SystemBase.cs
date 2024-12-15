@@ -160,10 +160,10 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         };
 
     [Description("Открывать ли длинные позиции")]
-    [HandlerParameter(true, "true")]
+    [HandlerParameter(true, "true", NotOptimized = true)]
     public bool IsLongTrade { get; set; }
 
     [Description("Открывать ли короткие позиции")]
-    [HandlerParameter(true, "true")]
+    [HandlerParameter(true, "true", NotOptimized = true)]
     public bool IsShortTrade { get; set; }
 }

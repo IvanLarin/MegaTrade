@@ -112,14 +112,14 @@ internal abstract class TradeBase : ITrade
     {
         if (TradeRules.IsLongTrade && LongPosition.IsActive && !AntiGap.IsLastCandleOfSession)
         {
-            if (Signals.LongStop.HasValue)
-                LongPosition.CloseAtStop(OnTheNextCandle, Signals.LongStop.Value,
+            if (Signals.LongStopLoss.HasValue)
+                LongPosition.CloseAtStop(OnTheNextCandle, Signals.LongStopLoss.Value,
                     PositionNames.LongStopLoss);
 
             if (!LongPosition.IsActive) return;
 
-            if (Signals.LongTake.HasValue)
-                LongPosition.CloseAtProfit(OnTheNextCandle, Signals.LongTake.Value,
+            if (Signals.LongTakeProfit.HasValue)
+                LongPosition.CloseAtProfit(OnTheNextCandle, Signals.LongTakeProfit.Value,
                     PositionNames.LongTakeProfit);
         }
     }
@@ -128,14 +128,14 @@ internal abstract class TradeBase : ITrade
     {
         if (TradeRules.IsShortTrade && ShortPosition.IsActive && !AntiGap.IsLastCandleOfSession)
         {
-            if (Signals.ShortStop.HasValue)
-                ShortPosition.CloseAtStop(OnTheNextCandle, Signals.ShortStop.Value,
+            if (Signals.ShortStopLoss.HasValue)
+                ShortPosition.CloseAtStop(OnTheNextCandle, Signals.ShortStopLoss.Value,
                     PositionNames.ShortStopLoss);
 
             if (!ShortPosition.IsActive) return;
 
-            if (Signals.ShortTake.HasValue)
-                ShortPosition.CloseAtProfit(OnTheNextCandle, Signals.ShortTake.Value,
+            if (Signals.ShortTakeProfit.HasValue)
+                ShortPosition.CloseAtProfit(OnTheNextCandle, Signals.ShortTakeProfit.Value,
                     PositionNames.ShortTakeProfit);
         }
     }

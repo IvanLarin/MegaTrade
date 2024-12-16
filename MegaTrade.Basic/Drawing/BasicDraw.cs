@@ -47,7 +47,7 @@ internal class BasicDraw : IBasicDraw
         NeutralPalette = _neutralPalette,
         BullPalette = new BullPalette(),
         BearPalette = new BearPalette()
-    }.DecimalPlaces(2);
+    }.RightDecimalPlaces(2);
 
     private bool[]? _longEnterSignals;
 
@@ -67,7 +67,7 @@ internal class BasicDraw : IBasicDraw
 
     private IPaint? _paint;
 
-    public IPaint Paint => _paint ??= AddPaint(BasicTimeframe.Symbol).DecimalPlaces(BasicTimeframe.Decimals);
+    public IPaint Paint => _paint ??= AddPaint(BasicTimeframe.Symbol).RightDecimalPlaces(BasicTimeframe.Decimals);
 
     private readonly IPalette _neutralPalette = new NeutralPalette();
 

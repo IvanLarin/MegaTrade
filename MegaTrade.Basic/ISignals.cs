@@ -10,11 +10,11 @@ public interface ISignals : ITradeSignals
 
     double ShortExitVolume { get; }
 
-    double? LongTake { get; }
+    double? LongTakeProfit { get; }
 
-    double? LongStop { get; }
+    double? LongStopLoss { get; }
 
-    double? ShortTake { get; }
+    double? ShortTakeProfit { get; }
 
-    double? ShortStop { get; }
+    double? ShortStopLoss { get; }
 }

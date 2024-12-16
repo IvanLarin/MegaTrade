@@ -110,17 +110,7 @@ public class NullPaint : IPaint
 
     public IPaint Bound(params double[] bounds) => this;
 
-    public IPaint BoundOfMin(params IList<double>[] bounds) => this;
+    public IPaint LeftDecimalPlaces(int count) => this;
 
-    public IPaint BoundOfMax(params IList<double>[] bounds) => this;
-
-    public IPaint BoundOfMajorMax(params IList<double>[] bounds) => this;
-
-    public IPaint BoundOfMajorMin(params IList<double>[] bounds) => this;
-
-    public IPaint BoundOfMajorMax(double majorityPercent, params IList<double>[] bounds) => this;
-
-    public IPaint BoundOfMajorMin(double majorityPercent, params IList<double>[] bounds) => this;
-
-    public IPaint DecimalPlaces(int count) => this;
+    public IPaint RightDecimalPlaces(int count) => this;
 }

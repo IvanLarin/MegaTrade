@@ -190,43 +190,13 @@ public class Paint : IPaint
         return this;
     }
 
-    public IPaint BoundOfMin(params IList<double>[] bounds)
+    public IPaint LeftDecimalPlaces(int count)
     {
-        PaintBounds.BoundOfMin(bounds);
+        Graph.UpdatePrecision(PaneSides.LEFT, count);
         return this;
     }
 
-    public IPaint BoundOfMax(params IList<double>[] bounds)
-    {
-        PaintBounds.BoundOfMax(bounds);
-        return this;
-    }
-
-    public IPaint BoundOfMajorMax(params IList<double>[] bounds)
-    {
-        PaintBounds.BoundOfMajorMax(bounds);
-        return this;
-    }
-
-    public IPaint BoundOfMajorMin(params IList<double>[] bounds)
-    {
-        PaintBounds.BoundOfMajorMin(bounds);
-        return this;
-    }
-
-    public IPaint BoundOfMajorMax(double majorityPercent, params IList<double>[] bounds)
-    {
-        PaintBounds.BoundOfMajorMax(majorityPercent, bounds);
-        return this;
-    }
-
-    public IPaint BoundOfMajorMin(double majorityPercent, params IList<double>[] bounds)
-    {
-        PaintBounds.BoundOfMajorMin(majorityPercent, bounds);
-        return this;
-    }
-
-    public IPaint DecimalPlaces(int count)
+    public IPaint RightDecimalPlaces(int count)
     {
         Graph.UpdatePrecision(PaneSides.RIGHT, count);
         return this;

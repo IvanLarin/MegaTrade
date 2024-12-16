@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 
-namespace MegaTrade.Systems.Timeframing;
+namespace MegaTrade.Timeframes;
 
-public class TimeframesParser
+internal class TimeframesParser
 {
     public int[][] Parse(string expression)
     {

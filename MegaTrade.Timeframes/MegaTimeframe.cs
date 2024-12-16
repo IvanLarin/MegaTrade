@@ -2,7 +2,7 @@
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
 
-namespace MegaTrade.Systems.Timeframing;
+namespace MegaTrade.Timeframes;
 
 [HandlerCategory("Мегатрон")]
 [HandlerName("Мегатаймфрейм")]
@@ -25,6 +25,10 @@ public class MegaTimeframe : ICompressHandler, IContextUses, INeedVariableVisual
     private ISecurity GetSecurity(ISecurity source)
     {
         if (source is not IMultiSecurity multiSecurity) return source;
+
+        if (TimeframeNumber > multiSecurity.All.Length)
+            throw new Exception(
+                $"Некорректный {nameof(TimeframeNumber)} у Мегатаймфрейма. Доступный интервал [1, {multiSecurity.All.Length}].");
 
         return multiSecurity.All[TimeframeNumber - 1];
     }

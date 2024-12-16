@@ -3,9 +3,9 @@ using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Utils;
 
-namespace MegaTrade.Systems.Timeframing;
+namespace MegaTrade.Timeframes;
 
-public class MultiSecurity : IMultiSecurity
+internal class MultiSecurity : IMultiSecurity
 {
     public MultiSecurity(ISecurity[] securities)
     {

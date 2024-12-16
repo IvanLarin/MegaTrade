@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="TSLab.DataSource">
+      <HintPath>..\DLLs\TSLab.DataSource.dll</HintPath>
+    </Reference>
+    <Reference Include="TSLab.Script">
+      <HintPath>..\DLLs\TSLab.Script.dll</HintPath>
+    </Reference>
+    <Reference Include="TSLab.Script.Handlers">
+      <HintPath>..\DLLs\TSLab.Script.Handlers.dll</HintPath>
+    </Reference>
+    <Reference Include="TSLab.Utility">
+      <HintPath>..\DLLs\TSLab.Utility.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)*&quot; &quot;%25LOCALAPPDATA%25\TSLab\TSLab 2.0\Handlers&quot; /E /H /Y /C&#xD;&#xA;xcopy &quot;$(TargetDir)*&quot; &quot;C:\Program Files\TSLab\TSLab 2.2&quot; /E /H /Y /C" />
+  </Target>
+
+</Project>

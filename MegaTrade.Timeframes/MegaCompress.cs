@@ -3,7 +3,7 @@ using TSLab.Script;
 using TSLab.Script.Handlers;
 using TSLab.Script.Handlers.Options;
 
-namespace MegaTrade.Systems.Timeframing;
+namespace MegaTrade.Timeframes;
 
 [HandlerCategory("Мегатрон")]
 [HandlerName("Мегасжатие")]

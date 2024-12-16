@@ -17,7 +17,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
         DoSetup();
 
-        for (var i = Math.Max(TradeFromBar, Context.TradeFromBar); i < Context.BarsCount; i++)
+        for (var i = TradeFromBar; i < Context.BarsCount; i++)
         {
             Now = i;
             Trade.Do();

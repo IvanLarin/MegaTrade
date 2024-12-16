@@ -64,19 +64,19 @@ public class TwoMomentums : SystemBase
         _smallTimeframe = smallTimeframe;
         _bigTimeframe = bigTimeframe;
 
-        _smallTimeframeClosePrices = smallTimeframe.ClosePrices;
-        _bigTimeframeClosePrices = bigTimeframe.ClosePrices;
+        var smallTimeframeClosePrices = smallTimeframe.ClosePrices;
+        var bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
-        _smallTimeframeMacd = _smallTimeframeClosePrices.MACD(SmallMacdOfSmall, BigMacdOfSmall)
+        _smallTimeframeMacd = smallTimeframeClosePrices.MACD(SmallMacdOfSmall, BigMacdOfSmall)
             .DecompressFrom(smallTimeframe);
 
-        _bigTimeframeMacd = _bigTimeframeClosePrices.MACD(SmallMacdOfBig, BigMacdOfBig)
+        _bigTimeframeMacd = bigTimeframeClosePrices.MACD(SmallMacdOfBig, BigMacdOfBig)
             .DecompressFrom(bigTimeframe);
 
-        _smallTimeframeRsi = _smallTimeframeClosePrices.RSI(RsiPeriodOfSmall)
+        _smallTimeframeRsi = smallTimeframeClosePrices.RSI(RsiPeriodOfSmall)
             .DecompressFrom(smallTimeframe);
 
-        _bigTimeframeRsi = _bigTimeframeClosePrices.RSI(RsiPeriodOfBig)
+        _bigTimeframeRsi = bigTimeframeClosePrices.RSI(RsiPeriodOfBig)
             .DecompressFrom(bigTimeframe);
 
         Run();
@@ -124,8 +124,6 @@ public class TwoMomentums : SystemBase
     private ISecurity _basicTimeframe = null!;
     private ISecurity _smallTimeframe = null!;
     private ISecurity _bigTimeframe = null!;
-    private IList<double> _smallTimeframeClosePrices = [];
-    private IList<double> _bigTimeframeClosePrices = [];
     private IList<double> _smallTimeframeMacd = [];
     private IList<double> _bigTimeframeMacd = [];
     private IList<double> _smallTimeframeRsi = [];

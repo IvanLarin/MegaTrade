@@ -47,8 +47,8 @@ public class NadarayaWatson : SystemBase
     protected override void Draw() => Paint
         .Candles(_basicTimeframe)
         .Candles(_timeframe)
-        .Function(_nadarayaUp, "Надарая-Ватсон", AnimalColor.Bull)
-        .Function(_nadarayaDown, "Надарая-Ватсон", AnimalColor.Bear);
+        .FunctionWithoutZeroes(_nadarayaUp, "Надарая-Ватсон", AnimalColor.Bull)
+        .FunctionWithoutZeroes(_nadarayaDown, "Надарая-Ватсон", AnimalColor.Bear);
 
     private ISecurity _basicTimeframe = null!;
     private ISecurity _timeframe = null!;

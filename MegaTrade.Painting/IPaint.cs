@@ -20,6 +20,18 @@ public interface IPaint
 
     IPaint Function(IList<double> values, string name, Color color, out Color usedColor);
 
+    IPaint FunctionWithoutZeroes(IList<double> values, string name);
+
+    IPaint FunctionWithoutZeroes(IList<double> values, string name, out Color usedColor);
+
+    IPaint FunctionWithoutZeroes(IList<double> values, string name, AnimalColor animalColor);
+
+    IPaint FunctionWithoutZeroes(IList<double> values, string name, AnimalColor animalColor, out Color usedColor);
+
+    IPaint FunctionWithoutZeroes(IList<double> values, string name, Color color);
+
+    IPaint FunctionWithoutZeroes(IList<double> values, string name, Color color, out Color usedColor);
+
     IPaint Histogram(IList<double> values, string name);
 
     IPaint Histogram(IList<double> values, string name, out Color usedColor);

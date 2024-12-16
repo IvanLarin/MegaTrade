@@ -9,7 +9,12 @@ namespace MegaTrade.Indicators.All;
 
 internal class NadarayaWatson : Calculator<(double[] nwe, double[] sae)>
 {
-    protected override (double[] nwe, double[] sae) Calculate()
+    protected override (double[] nwe, double[] sae) Calculate() =>
+        Cache.Entry<(double[] nwe, double[] sae)>(nameof(NadarayaWatson), CacheKind.Memory,
+                [Source.CacheKey(), Bandwidth, Range])
+            .Calculate(DoCalculate);
+
+    private (double[] nwe, double[] sae) DoCalculate()
     {
         using var context = Context.Create(builder => builder.AllAccelerators());
 
@@ -21,7 +26,7 @@ internal class NadarayaWatson : Calculator<(double[] nwe, double[] sae)>
         using var accelerator = bestGpu.CreateAccelerator(context);
         using var stream = accelerator.CreateStream();
 
-        var prices = Local.Context.GetOrCreateArray(Source.Select(x => (float)x));
+        var prices = Local.Context.GetOrCreateArray<float>(Source.Count).FillFrom(Source.Select(x => (float)x));
         using MemoryBuffer1D<float, Stride1D.Dense> pricesBuffer = accelerator.Allocate1D(stream, prices);
         using MemoryBuffer1D<float, Stride1D.Dense> gaussBuffer = accelerator.Allocate1D(stream, Gauss);
         using MemoryBuffer1D<float, Stride1D.Dense> nweBuffer = accelerator.Allocate1D<float>(prices.Length);
@@ -151,9 +156,9 @@ internal class NadarayaWatson : Calculator<(double[] nwe, double[] sae)>
         return result.ToArray();
     }
 
-    public required int Range { get; init; }
-
     private float GaussFormula(int x) => (float)Math.Exp(-x * x / (2 * Bandwidth * Bandwidth));
+
+    public required int Range { get; init; }
 
     public required double Bandwidth { get; init; }
 

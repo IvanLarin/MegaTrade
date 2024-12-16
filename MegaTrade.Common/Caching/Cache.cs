@@ -9,6 +9,9 @@ public static class Cache
 
     public static T Get<T>(string name, Func<T> calculate, object[] dependencies, CacheKind kind)
     {
+        if (kind == CacheKind.NoCache || Local.Context?.Runtime.IsRealTime == true)
+            return calculate();
+
         var key = MakeKey(name, dependencies);
 
         if (Load(out var data, kind)) return data!;

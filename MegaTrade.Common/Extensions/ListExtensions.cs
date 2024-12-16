@@ -1,7 +1,6 @@
 ﻿using HashDepot;
 using TSLab.DataSource;
 using TSLab.Script;
-using TSLab.Script.Handlers;
 
 namespace MegaTrade.Common.Extensions;
 
@@ -14,8 +13,6 @@ public static class ListExtensions
 
         return MurmurHash3.Hash32(bytes, 777);
     }
-
-    public static T[] ToPoolArray<T>(this IList<T> source, IContext? context) => context.GetOrCreateArray(source);
 
     public static IList<T> DecompressFrom<T>(this IList<T> source, ISecurity fromTimeframe) where T : struct =>
         fromTimeframe.Decompress(source, DecompressMethodWithDef.Default);

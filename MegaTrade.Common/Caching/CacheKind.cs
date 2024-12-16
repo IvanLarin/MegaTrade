@@ -4,6 +4,7 @@
     {
         Memory = 1,
         Disk = 2,
-        DiskAndMemory = 3
+        DiskAndMemory = 3,
+        NoCache
     }
 }

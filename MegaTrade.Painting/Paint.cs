@@ -59,6 +59,46 @@ public class Paint : IPaint
         return this;
     }
 
+    public IPaint FunctionWithoutZeroes(IList<double> values, string name)
+    {
+        PaintFunctions.FunctionWithoutZeroes(values, name);
+        return this;
+    }
+
+    public IPaint FunctionWithoutZeroes(IList<double> values, string name, out Color usedColor)
+    {
+        PaintFunctions.FunctionWithoutZeroes(values, name, out usedColor);
+        return this;
+    }
+
+    public IPaint FunctionWithoutZeroes(IList<double> values, string name, AnimalColor animalColor)
+
+    {
+        PaintFunctions.FunctionWithoutZeroes(values, name, animalColor);
+        return this;
+    }
+
+    public IPaint FunctionWithoutZeroes(IList<double> values, string name, AnimalColor animalColor, out Color usedColor)
+
+    {
+        PaintFunctions.FunctionWithoutZeroes(values, name, animalColor, out usedColor);
+        return this;
+    }
+
+    public IPaint FunctionWithoutZeroes(IList<double> values, string name, Color color)
+
+    {
+        PaintFunctions.FunctionWithoutZeroes(values, name, color);
+        return this;
+    }
+
+    public IPaint FunctionWithoutZeroes(IList<double> values, string name, Color color, out Color usedColor)
+
+    {
+        PaintFunctions.FunctionWithoutZeroes(values, name, color, out usedColor);
+        return this;
+    }
+
     public IPaint Histogram(IList<double> values, string name)
     {
         PaintHistograms.Histogram(values, name);

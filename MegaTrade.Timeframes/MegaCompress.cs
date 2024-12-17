@@ -45,7 +45,7 @@ public class MegaCompress : ICompressHandler, IContextUses
 
     [HelperName("Timeframes", Constants.En)]
     [HelperName("Таймфреймы", Constants.Ru)]
-    [HandlerParameter(true, "{5,15}", NotOptimized = true)]
+    [HandlerParameter(true, "{{5,15}}", NotOptimized = true)]
     public string Timeframes { get; set; } = "";
 
     [HandlerParameter(Name = "Номер сочетания", IsShown = true, Default = "1", Min = "1", Step = "1", EditorMin = "1")]

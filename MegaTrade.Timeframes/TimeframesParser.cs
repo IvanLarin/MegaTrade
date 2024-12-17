@@ -9,7 +9,7 @@ internal class TimeframesParser
         var sanitized = Sanitize(expression);
 
         if (!FineSyntax(sanitized))
-            throw new Exception("Неправильный синтаксис у Мегасжатия");
+            throw new Exception("Неправильный синтаксис у Мегасжатия. Вот нормальный пример 3-х таймфреймов: {{1, 5, 15}, {15, 60}, {120, 240, 1440}}");
 
         var input = ParseExpression(sanitized);
 
@@ -38,65 +38,21 @@ internal class TimeframesParser
         return true;
     }
 
-    private string Sanitize(string expression)
-    {
-        string sanitizedExpression = expression.Replace(" ", "");
-
-        if (sanitizedExpression.StartsWith("{") && sanitizedExpression.EndsWith("}"))
-        {
-            string innerContent = sanitizedExpression[1..^1];
-
-            int openBraces = 0;
-            bool isBalanced = true;
-
-            foreach (char c in innerContent)
-            {
-                if (c == '{')
-                {
-                    openBraces++;
-                }
-                else if (c == '}')
-                {
-                    openBraces--;
-                    if (openBraces < 0)
-                    {
-                        isBalanced = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isBalanced && openBraces == 0)
-            {
-                return innerContent;
-            }
-        }
-
-        return sanitizedExpression;
-    }
+    private string Sanitize(string expression) => expression.Replace(" ", "");
 
     private bool FineSyntax(string expression) =>
-        Regex.IsMatch(expression, @"^(\d+|(\{\d+(,\d+)*\}))*(,(\d+|(\{\d+(,\d+)*\})))*$");
+        Regex.IsMatch(expression, @"^\{((\{\d+(,\d+)*\}))*(,(\d+|(\{\d+(,\d+)*\})))*\}$");
 
     private int[][] ParseExpression(string expression)
     {
-        List<int[]> result = new List<int[]>();
+        List<int[]> result = [];
 
-        MatchCollection matches = Regex.Matches(expression, @"(\{(\d+(,\d+)*)\}|(\d+))");
+        MatchCollection matches = Regex.Matches(expression, @"\{(\d+(,\d+)*)\}");
 
         foreach (Match match in matches)
         {
-            if (match.Groups[0].Value.StartsWith("{"))
-            {
-                string innerGroup = match.Groups[2].Value;
-                int[] numbers = Array.ConvertAll(innerGroup.Split(','), int.Parse);
-                result.Add(numbers);
-            }
-            else
-            {
-                int number = int.Parse(match.Groups[0].Value);
-                result.Add([number]);
-            }
+            int[] numbers = Array.ConvertAll(match.Groups[1].Value.Split(','), int.Parse);
+            result.Add(numbers);
         }
 
         return result.ToArray();

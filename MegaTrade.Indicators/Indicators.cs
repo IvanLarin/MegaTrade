@@ -1,4 +1,5 @@
-﻿using MegaTrade.Indicators.All;
+﻿using MegaTrade.Common;
+using MegaTrade.Indicators.All;
 using TSLab.Script;
 using TSLab.Script.Handlers;
 
@@ -10,19 +11,22 @@ public static class Indicators
         new MACDEx
         {
             Period1 = smallPeriod,
-            Period2 = bigPeriod
+            Period2 = bigPeriod,
+            Context = Local.Context
         }.Execute(source);
 
     public static IList<double> RSI(this IList<double> source, int period) =>
         new RSI
         {
-            Period = period
+            Period = period,
+            Context = Local.Context
         }.Execute(source);
 
     public static IList<double> ATR(this ISecurity source, int period) =>
         new AverageTrueRangeNew
         {
-            Period = period
+            Period = period,
+            Context = Local.Context
         }.Execute(source);
 
     public static IList<double> NadarayaWatsonUpper(this IList<double> source, double bandwidth, double multiplier,

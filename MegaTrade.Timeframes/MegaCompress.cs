@@ -1,3 +1,4 @@
+using MegaTrade.Common.Extensions;
 using TSLab.DataSource;
 using TSLab.Script;
 using TSLab.Script.Handlers;
@@ -23,17 +24,16 @@ public class MegaCompress : ICompressHandler, IContextUses
         var timeframes = allTimeframes[Number - 1];
 
         var securities = timeframes
-            .Select(interval => new Interval(interval, source.IntervalBase))
             .Select(interval =>
             {
-                switch (interval.Base)
+                switch (source.IntervalBase)
                 {
                     case DataIntervals.VOLUME:
-                        return source.CompressToVolume(interval);
+                        return source.CompressToVolume(new Interval(interval, source.IntervalBase));
                     case DataIntervals.PRICERANGE:
-                        return source.CompressToPriceRange(interval);
+                        return source.CompressToPriceRange(new Interval(interval, source.IntervalBase));
                     default:
-                        return source.CompressTo(interval, 0, 1440, 0);
+                        return source.DailyCompressTo(interval);
                 }
             }).ToArray();
 
@@ -48,9 +48,7 @@ public class MegaCompress : ICompressHandler, IContextUses
     [HandlerParameter(true, "{5,15}", NotOptimized = true)]
     public string Timeframes { get; set; } = "";
 
-    [HelperName("Compress combination number", Constants.En)]
-    [HelperName("Номер комбинации сжатий", Constants.Ru)]
-    [HandlerParameter(true, "1", Min = "1", Step = "1", EditorMin = "1")]
+    [HandlerParameter(Name = "Номер сочетания", IsShown = true, Default = "1", Min = "1", Step = "1", EditorMin = "1")]
     public int Number { get; set; }
 
     public IContext? Context { get; set; }

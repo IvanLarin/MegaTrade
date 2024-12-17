@@ -1,6 +1,5 @@
 ﻿using TSLab.Script;
 using TSLab.Script.Handlers;
-using TSLab.Script.Handlers.Options;
 
 namespace MegaTrade.Timeframes;
 
@@ -17,7 +16,7 @@ public class MegaTimeframe : ICompressHandler, IContextUses, INeedVariableVisual
         var security = GetSecurity(source);
 
         if (Context != null)
-            Context.ScriptResults[$"ТФ_{VariableVisual}"] = security.Interval;
+            Context.ScriptResults[VariableVisual] = security.Interval;
 
         return security;
     }
@@ -28,14 +27,12 @@ public class MegaTimeframe : ICompressHandler, IContextUses, INeedVariableVisual
 
         if (TimeframeNumber > multiSecurity.All.Length)
             throw new Exception(
-                $"Некорректный {nameof(TimeframeNumber)} у Мегатаймфрейма. Доступный интервал [1, {multiSecurity.All.Length}].");
+                $"Некорректный номер таймфрейма у Мегатаймфрейма. Доступный интервал [1, {multiSecurity.All.Length}].");
 
         return multiSecurity.All[TimeframeNumber - 1];
     }
 
-    [HelperName("TimeframeNumber", Constants.En)]
-    [HelperName("Номер таймфрейма", Constants.Ru)]
-    [HandlerParameter(true, "1", Min = "1")]
+    [HandlerParameter(Name = "Номер таймфрейма", IsShown = true, Default = "1", Min = "1", NotOptimized = true)]
     public int TimeframeNumber { get; set; }
 
     public string VariableVisual { get; set; } = "";

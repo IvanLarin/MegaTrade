@@ -1,5 +1,5 @@
 ﻿using MegaTrade.Basic;
-using MegaTrade.Common.Extensions;
+using MegaTrade.Basic.TradeExtensions;
 using MegaTrade.Draw;
 using MegaTrade.Indicators;
 using TSLab.Script;

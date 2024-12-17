@@ -1,8 +1,8 @@
 ﻿namespace MegaTrade.Common.Calculating;
 
-public abstract class Calculator<T>
+public abstract class Calculator<TResult>
 {
-    public T Result
+    public TResult Result
     {
         get
         {
@@ -15,5 +15,5 @@ public abstract class Calculator<T>
     {
     }
 
-    protected abstract T Calculate();
+    protected abstract TResult Calculate();
 }

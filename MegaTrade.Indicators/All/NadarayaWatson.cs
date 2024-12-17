@@ -136,7 +136,7 @@ internal class NadarayaWatson : Calculator<(double[] nwe, double[] sae)>
 
     private float[] CalculateGauss()
     {
-        List<float> forward = new();
+        List<float> forward = [];
 
         for (var i = 1; ; i++)
         {
@@ -148,7 +148,7 @@ internal class NadarayaWatson : Calculator<(double[] nwe, double[] sae)>
         List<float> backward = [.. forward];
         backward.Reverse();
 
-        List<float> result = new();
+        List<float> result = [];
         result.AddRange(backward);
         result.Add(GaussFormula(0));
         result.AddRange(forward);

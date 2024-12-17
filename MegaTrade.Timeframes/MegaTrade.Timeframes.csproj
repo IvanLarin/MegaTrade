@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MegaTrade.Common\MegaTrade.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="TSLab.DataSource">
       <HintPath>..\DLLs\TSLab.DataSource.dll</HintPath>
     </Reference>

@@ -1,10 +1,9 @@
 ﻿using HashDepot;
-using TSLab.DataSource;
 using TSLab.Script;
 
-namespace MegaTrade.Common.Extensions;
+namespace MegaTrade.Common.Caching;
 
-public static class ListExtensions
+public static class Extensions
 {
     public static uint CacheKey<T>(this IList<T> source)
     {
@@ -14,6 +13,6 @@ public static class ListExtensions
         return MurmurHash3.Hash32(bytes, 777);
     }
 
-    public static IList<T> DecompressFrom<T>(this IList<T> source, ISecurity fromTimeframe) where T : struct =>
-        fromTimeframe.Decompress(source, DecompressMethodWithDef.Default);
+    public static uint CacheKey(this ISecurity security) =>
+        security.Bars.Select(x => x.Close).ToArray().CacheKey();
 }

@@ -24,9 +24,8 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
         DoSetup();
 
-        for (var i = TradeFromBar; i < Context.BarsCount; i++)
+        for (Now = TradeFromBar; Now < Context.BarsCount; Now++)
         {
-            Now = i;
             Trade.Do();
             BasicDraw.PushSignals();
         }
@@ -156,11 +155,8 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
         T[] result = Context.GetOrCreateArray<T>(Context.BarsCount);
 
-        for (var i = TradeFromBar; i < Context.BarsCount; i++)
-        {
-            Now = i;
-            result[i] = func();
-        }
+        for (Now = TradeFromBar; Now < Context.BarsCount; Now++)
+            result[Now] = func();
 
         return result;
     }

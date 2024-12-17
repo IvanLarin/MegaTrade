@@ -92,14 +92,14 @@ public class TwoMomentums : SystemBase
     protected override void Draw() => Paint
         .Candles(_smallTimeframe)
         .Candles(_bigTimeframe)
-        .Chart("MACD")
+        ._______________Chart_______________("MACD")
         .Level(0, "Ноль", ScriptColors.White)
         .Function(_smallTimeframeMacd, "MACD меньшего таймфрейма")
         .Function(_bigTimeframeMacd, "MACD большего таймфрейма")
         .Signal(Select(() => IsBullMacdStart),
             "Бычий разворот меньшего таймрейма в направлении большего таймрейма", AnimalColor.Bull)
         .Signal(Select(() => IsLongExit), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear)
-        .Chart("RSI")
+        ._______________Chart_______________("RSI")
         .Bound(0, 100)
         .Function(_smallTimeframeRsi, "RSI меньшего таймфрейма", out var smallRsiColor)
         .Level(OverboughtRsiOfSmall, "Уровень перекупленности меньшего таймфрейма", smallRsiColor)

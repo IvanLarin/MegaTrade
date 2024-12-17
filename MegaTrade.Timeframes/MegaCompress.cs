@@ -19,7 +19,7 @@ public class MegaCompress : ICompressHandler, IContextUses
         var allTimeframes = new TimeframesParser().Parse(Timeframes);
 
         if (allTimeframes.Length < Number)
-            throw new Exception($"Слишком большой Number у мегасжатия. Max=={allTimeframes}, а Number=={Number}");
+            throw new Exception($"Слишком большой номер сочетания у Мегасжатия. Максимум {allTimeframes.Length}, по факту {Number}");
 
         var timeframes = allTimeframes[Number - 1];
 
@@ -38,7 +38,7 @@ public class MegaCompress : ICompressHandler, IContextUses
             }).ToArray();
 
         if (Context != null)
-            Context.ScriptResults["Число сочетаний ТФ межасжатия"] = allTimeframes.Length;
+            Context.ScriptResults["Число сочетаний таймфреймов"] = allTimeframes.Length;
 
         return new MultiSecurity(securities);
     }

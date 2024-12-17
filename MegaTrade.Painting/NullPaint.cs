@@ -82,7 +82,11 @@ public class NullPaint : IPaint
 
     public IPaint Signal(IList<bool> values, string name) => this;
 
-    public IPaint Signal(IList<bool> values, string name, out Color usedColor) => throw new NotImplementedException();
+    public IPaint Signal(IList<bool> values, string name, out Color usedColor)
+    {
+        usedColor = ScriptColors.Black;
+        return this;
+    }
 
     public IPaint Signal(IList<bool> values, string name, AnimalColor animalColor) => this;
 
@@ -113,4 +117,6 @@ public class NullPaint : IPaint
     public IPaint LeftDecimalPlaces(int count) => this;
 
     public IPaint RightDecimalPlaces(int count) => this;
+
+    public IPaint Chart(string name) => this;
 }

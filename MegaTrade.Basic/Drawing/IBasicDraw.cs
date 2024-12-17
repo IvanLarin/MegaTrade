@@ -2,13 +2,11 @@
 
 namespace MegaTrade.Basic.Drawing;
 
-internal interface IBasicDraw
+internal interface IBasicDraw : ICharter
 {
     void Draw();
 
     void PushSignals();
-
-    IPaint AddPaint(string name);
 
     IPaint Paint { get; }
 }

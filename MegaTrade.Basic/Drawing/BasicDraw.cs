@@ -40,13 +40,14 @@ internal class BasicDraw : IBasicDraw
         ShortExits[Now] = TradeSignals.IsShortExit;
     }
 
-    public IPaint AddPaint(string name) => new Paint
+    public IPaint Chart(string name) => new Paint
     {
         Context = Context,
         GraphName = name,
         NeutralPalette = _neutralPalette,
         BullPalette = new BullPalette(),
-        BearPalette = new BearPalette()
+        BearPalette = new BearPalette(),
+        Charter = this
     }.RightDecimalPlaces(2);
 
     private bool[]? _longEnterSignals;
@@ -67,7 +68,7 @@ internal class BasicDraw : IBasicDraw
 
     private IPaint? _paint;
 
-    public IPaint Paint => _paint ??= AddPaint(BasicTimeframe.Symbol).RightDecimalPlaces(BasicTimeframe.Decimals);
+    public IPaint Paint => _paint ??= Chart(BasicTimeframe.Symbol).RightDecimalPlaces(BasicTimeframe.Decimals);
 
     private readonly IPalette _neutralPalette = new NeutralPalette();
 

@@ -12,9 +12,7 @@ internal class NullBasicDraw : IBasicDraw
     {
     }
 
-    private readonly IPaint _paint = new NullPaint();
+    public IPaint Paint { get; } = new NullPaint();
 
-    public IPaint AddPaint(string name) => _paint;
-
-    public IPaint Paint => _paint;
+    public IPaint Chart(string name) => Paint;
 }

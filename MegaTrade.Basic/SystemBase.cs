@@ -166,10 +166,6 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     /// </summary>
     protected IPaint Paint => BasicDraw.Paint;
 
-    /// <summary>
-    /// Добавляет панель графика и возвращает <see cref="IPaint"/> для рисования на ней.
-    /// </summary>
-    protected IPaint AddPaint(string name) => BasicDraw.AddPaint(name);
 
     /// <summary>
     /// Выполняет отрисовку.

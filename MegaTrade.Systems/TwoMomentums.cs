@@ -64,8 +64,8 @@ public class TwoMomentums : SystemBase
         _smallTimeframe = smallTimeframe;
         _bigTimeframe = bigTimeframe;
 
-        var smallTimeframeClosePrices = smallTimeframe.ClosePrices;
-        var bigTimeframeClosePrices = bigTimeframe.ClosePrices;
+        IList<double>? smallTimeframeClosePrices = smallTimeframe.ClosePrices;
+        IList<double>? bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
         _smallTimeframeMacd = smallTimeframeClosePrices.MACD(SmallMacdOfSmall, BigMacdOfSmall)
             .DecompressFrom(smallTimeframe);
@@ -89,24 +89,17 @@ public class TwoMomentums : SystemBase
             [SmallMacdOfSmall, BigMacdOfSmall, SmallMacdOfBig, BigMacdOfBig, RsiPeriodOfSmall, RsiPeriodOfBig]
     };
 
-    protected override void Draw()
-    {
-        Paint.Candles(_smallTimeframe);
-        Paint.Candles(_bigTimeframe);
-
-        DrawMacd();
-        DrawRsi();
-    }
-
-    private void DrawMacd() => AddPaint("MACD")
+    protected override void Draw() => Paint
+        .Candles(_smallTimeframe)
+        .Candles(_bigTimeframe)
+        .Chart("MACD")
         .Level(0, "Ноль", ScriptColors.White)
         .Function(_smallTimeframeMacd, "MACD меньшего таймфрейма")
         .Function(_bigTimeframeMacd, "MACD большего таймфрейма")
         .Signal(Select(() => IsBullMacdStart),
             "Бычий разворот меньшего таймрейма в направлении большего таймрейма", AnimalColor.Bull)
-        .Signal(Select(() => IsLongExit), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear);
-
-    private void DrawRsi() => AddPaint("RSI")
+        .Signal(Select(() => IsLongExit), "Медвежий разворот меньшего таймфрейма", AnimalColor.Bear)
+        .Chart("RSI")
         .Bound(0, 100)
         .Function(_smallTimeframeRsi, "RSI меньшего таймфрейма", out var smallRsiColor)
         .Level(OverboughtRsiOfSmall, "Уровень перекупленности меньшего таймфрейма", smallRsiColor)

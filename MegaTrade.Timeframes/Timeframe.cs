@@ -4,12 +4,12 @@ using TSLab.Script.Handlers;
 namespace MegaTrade.Timeframes;
 
 [HandlerCategory("Мегатрон")]
-[HandlerName("Мегатаймфрейм")]
+[HandlerName("Таймфрейм")]
 [InputsCount(1)]
 [Input(0, TemplateTypes.SECURITY, Name = "Инструмент")]
 [OutputsCount(1)]
 [OutputType(TemplateTypes.SECURITY)]
-public class MegaTimeframe : ICompressHandler, IContextUses, INeedVariableVisual
+public class Timeframe : ICompressHandler, IContextUses, INeedVariableVisual
 {
     public ISecurity Execute(ISecurity source)
     {
@@ -25,15 +25,15 @@ public class MegaTimeframe : ICompressHandler, IContextUses, INeedVariableVisual
     {
         if (source is not IMultiSecurity multiSecurity) return source;
 
-        if (TimeframeNumber > multiSecurity.All.Length)
+        if (Number > multiSecurity.All.Length)
             throw new Exception(
-                $"Некорректный номер таймфрейма у Мегатаймфрейма. Доступный интервал [1, {multiSecurity.All.Length}].");
+                $"Неправильный номер Таймфрейма. Доступный интервал [1, {multiSecurity.All.Length}].");
 
-        return multiSecurity.All[TimeframeNumber - 1];
+        return multiSecurity.All[Number - 1];
     }
 
-    [HandlerParameter(Name = "Номер таймфрейма", IsShown = true, Default = "1", Min = "1", NotOptimized = true)]
-    public int TimeframeNumber { get; set; }
+    [HandlerParameter(Name = "Номер", IsShown = true, Default = "1", Min = "1", NotOptimized = true)]
+    public int Number { get; set; }
 
     public string VariableVisual { get; set; } = "";
 

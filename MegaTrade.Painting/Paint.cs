@@ -7,6 +7,8 @@ namespace MegaTrade.Draw;
 
 public class Paint : IPaint
 {
+    public IPaint Chart(string name) => Charter.Chart(name);
+
     public IPaint Candles(ISecurity security, string? name = null)
     {
         PaintCandles.Candles(security, name);
@@ -289,4 +291,6 @@ public class Paint : IPaint
     public required IPalette BearPalette { private get; init; }
 
     public required IPalette NeutralPalette { private get; init; }
+
+    public required ICharter Charter { private get; init; }
 }

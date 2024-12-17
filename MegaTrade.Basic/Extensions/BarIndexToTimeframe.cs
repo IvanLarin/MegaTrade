@@ -1,7 +1,7 @@
 ﻿using MegaTrade.Common.Calculating;
 using TSLab.Script;
 
-namespace MegaTrade.Basic.TradeExtensions;
+namespace MegaTrade.Basic.Extensions;
 
 internal class BarIndexToTimeframe : Calculator<int>
 {

@@ -5,6 +5,9 @@ using TSLab.Script.Handlers;
 
 namespace MegaTrade.Indicators;
 
+/// <summary>
+///     Класс с методами для расчёта технических индикаторов.
+/// </summary>
 public static class Indicators
 {
     public static IList<double> MACD(this IList<double> source, int smallPeriod, int bigPeriod) =>

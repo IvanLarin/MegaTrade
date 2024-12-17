@@ -74,8 +74,8 @@ internal class TimeframesParser
 
     private int[][] MakeCombinations(int[][] input)
     {
-        List<int[]> result = new List<int[]>();
-        GenerateCombinations(input, 0, new List<int>(), result);
+        List<int[]> result = [];
+        GenerateCombinations(input, 0, [], result);
         return result.ToArray();
     }
 

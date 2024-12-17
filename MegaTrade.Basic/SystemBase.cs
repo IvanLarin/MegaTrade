@@ -11,14 +11,17 @@ using TSLab.Script.Handlers;
 namespace MegaTrade.Basic;
 
 /// <summary>
-/// Базовый класс для торговой системы.
-/// <para>Наследник <see cref="SystemBase"/> в методе <c>public Execute</c> должен инициализировать свои переменные и вызвать метод <see cref="Run"/>.</para>
+///     Базовый класс для торговой системы.
+///     <para>
+///         Наследник <see cref="SystemBase" /> в методе <c>public Execute</c> должен инициализировать свои переменные и
+///         вызвать метод <see cref="Run" />.
+///     </para>
 /// </summary>
 [HandlerCategory("МегаСистемы")]
 public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProvider, ISignals, ISelector
 {
     /// <summary>
-    /// Запускает выполнение торговой системы.
+    ///     Запускает выполнение торговой системы.
     /// </summary>
     protected void Run()
     {
@@ -41,115 +44,115 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     }
 
     /// <summary>
-    /// Получает настройки для торговой системы
+    ///     Получает настройки для торговой системы
     /// </summary>
     protected abstract Setup Setup();
 
     /// <summary>
-    /// Указывает текущий индекс бара для которого рассчитываются свойства данного класса.
+    ///     Указывает текущий индекс бара для которого рассчитываются свойства данного класса.
     /// </summary>
     public int Now { get; private set; }
 
     /// <summary>
-    /// Задаёт, следует ли открывать длинную позицию на текущем индексе бара.
+    ///     Задаёт, следует ли открывать длинную позицию на текущем индексе бара.
     /// </summary>
     public virtual bool IsLongEnter => false;
 
     /// <summary>
-    /// Задаёт, следует ли закрывать длинную позицию на текущем индексе бара.
+    ///     Задаёт, следует ли закрывать длинную позицию на текущем индексе бара.
     /// </summary>
     public virtual bool IsLongExit => false;
 
     /// <summary>
-    /// Задаёт, следует ли открывать короткую позицию на текущем индексе бара.
+    ///     Задаёт, следует ли открывать короткую позицию на текущем индексе бара.
     /// </summary>
     public virtual bool IsShortEnter => false;
 
     /// <summary>
-    /// Задаёт, следует ли закрывать короткую позицию на текущем индексе бара.
+    ///     Задаёт, следует ли закрывать короткую позицию на текущем индексе бара.
     /// </summary>
     public virtual bool IsShortExit => false;
 
     /// <summary>
-    /// Задаёт объем для открытия длинной позиции на текущем индексе бара.
+    ///     Задаёт объем для открытия длинной позиции на текущем индексе бара.
     /// </summary>
     public virtual double LongEnterVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
     /// <summary>
-    /// Задаёт объем для закрытия длинной позиции на текущем индексе бара.
+    ///     Задаёт объем для закрытия длинной позиции на текущем индексе бара.
     /// </summary>
     public virtual double LongExitVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
     /// <summary>
-    /// Задаёт объем для открытия короткой позиции на текущем индексе бара.
+    ///     Задаёт объем для открытия короткой позиции на текущем индексе бара.
     /// </summary>
     public virtual double ShortEnterVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
     /// <summary>
-    /// Задаёт объем для закрытия короткой позиции на текущем индексе бара.
+    ///     Задаёт объем для закрытия короткой позиции на текущем индексе бара.
     /// </summary>
     public virtual double ShortExitVolume =>
         BasicTimeframe.LotSize; //TODO каким количеством торговать, если счёт слился?
 
     /// <summary>
-    /// Указывает открыта ли длинная позиция на текущем индексе бара.
+    ///     Указывает открыта ли длинная позиция на текущем индексе бара.
     /// </summary>
     protected bool InLongPosition => Trade.InLongPosition;
 
     /// <summary>
-    /// Указывает не открыта ли длинная позиция на текущем индексе бара.
+    ///     Указывает не открыта ли длинная позиция на текущем индексе бара.
     /// </summary>
     protected bool NotInLongPosition => !InLongPosition;
 
     /// <summary>
-    /// Указывает открыта ли короткая позиция на текущем индексе бара.
+    ///     Указывает открыта ли короткая позиция на текущем индексе бара.
     /// </summary>
     protected bool InShortPosition => Trade.InShortPosition;
 
     /// <summary>
-    /// Указывает не открыта ли короткая позиция на текущем индексе бара.
+    ///     Указывает не открыта ли короткая позиция на текущем индексе бара.
     /// </summary>
     protected bool NotInShortPosition => !InShortPosition;
 
     /// <summary>
-    /// Предоставляет данные по текущей длинной позиции.
+    ///     Предоставляет данные по текущей длинной позиции.
     /// </summary>
     protected IPositionInfo LongPosition => Trade.LongPositionInfo;
 
     /// <summary>
-    /// Предоставляет данные по текущей короткой позиции.
+    ///     Предоставляет данные по текущей короткой позиции.
     /// </summary>
     protected IPositionInfo ShortPosition => Trade.ShortPositionInfo;
 
     /// <summary>
-    /// Задаёт значение для тейк-профита длинной позиции <see cref="Now"/>.
-    /// Если значение равно null, это означает, что тейк-профит для длинной позиции не должен выставляться.
+    ///     Задаёт значение для тейк-профита длинной позиции <see cref="Now" />.
+    ///     Если значение равно null, это означает, что тейк-профит для длинной позиции не должен выставляться.
     /// </summary>
     public virtual double? LongTakeProfit => null;
 
     /// <summary>
-    /// Задаёт значение для стоп-лосса длинной позиции <see cref="Now"/>.
-    /// Если значение равно null, это означает, что стоп-лосс для длинной позиции не должен выставляться.
+    ///     Задаёт значение для стоп-лосса длинной позиции <see cref="Now" />.
+    ///     Если значение равно null, это означает, что стоп-лосс для длинной позиции не должен выставляться.
     /// </summary>
     public virtual double? LongStopLoss => null;
 
     /// <summary>
-    /// Задаёт значение для тейк-профита короткой позиции <see cref="Now"/>.
-    /// Если значение равно null, это означает, что тейк-профит для короткой позиции не должен выставляться.
+    ///     Задаёт значение для тейк-профита короткой позиции <see cref="Now" />.
+    ///     Если значение равно null, это означает, что тейк-профит для короткой позиции не должен выставляться.
     /// </summary>
     public virtual double? ShortTakeProfit => null;
 
     /// <summary>
-    /// Задаёт значение для стоп-лосса короткой позиции <see cref="Now"/>.
-    /// Если значение равно null, это означает, что стоп-лосс для короткой позиции не должен выставляться.
+    ///     Задаёт значение для стоп-лосса короткой позиции <see cref="Now" />.
+    ///     Если значение равно null, это означает, что стоп-лосс для короткой позиции не должен выставляться.
     /// </summary>
     public virtual double? ShortStopLoss => null;
 
     /// <summary>
-    /// Выбирает данные на основе заданной функции, которая зависит от <see cref="Now"/>.
+    ///     Выбирает данные на основе заданной функции, которая зависит от <see cref="Now" />.
     /// </summary>
     public IList<T> Select<T>(Func<T> func) where T : struct
     {
@@ -162,13 +165,13 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     }
 
     /// <summary>
-    /// Предоставляет <see cref="IPaint"/> для рисования на главной панели графика.
+    ///     Предоставляет <see cref="IPaint" /> для рисования на главной панели графика.
     /// </summary>
     protected IPaint Paint => BasicDraw.Paint;
 
 
     /// <summary>
-    /// Выполняет отрисовку.
+    ///     Выполняет отрисовку.
     /// </summary>
     protected virtual void Draw()
     {

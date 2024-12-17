@@ -47,7 +47,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     protected abstract Setup Setup();
 
     /// <summary>
-    /// Указывает текущий индекс бара для которого рассчитываются свойства данного класса>.
+    /// Указывает текущий индекс бара для которого рассчитываются свойства данного класса.
     /// </summary>
     public int Now { get; private set; }
 

@@ -64,8 +64,8 @@ public class TwoMomentums : SystemBase
         _smallTimeframe = smallTimeframe;
         _bigTimeframe = bigTimeframe;
 
-        IList<double>? smallTimeframeClosePrices = smallTimeframe.ClosePrices;
-        IList<double>? bigTimeframeClosePrices = bigTimeframe.ClosePrices;
+        IList<double> smallTimeframeClosePrices = smallTimeframe.ClosePrices;
+        IList<double> bigTimeframeClosePrices = bigTimeframe.ClosePrices;
 
         _smallTimeframeMacd = smallTimeframeClosePrices.MACD(SmallMacdOfSmall, BigMacdOfSmall)
             .DecompressFrom(smallTimeframe);

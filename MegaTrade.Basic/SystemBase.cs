@@ -27,7 +27,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     {
         DoSetup();
 
-        for (Now = TradeFromBar; Now < Context.BarsCount; Now++)
+        for (Now = TradeFromBar; Now < FullBarCount; Now++)
         {
             Trade.Do();
             BasicDraw.PushSignals();
@@ -41,6 +41,7 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
         var setup = Setup();
         BasicTimeframe = setup.BasicTimeframe;
         TradeFromBar = setup.MinBarNumberLimits.Concat([Context.TradeFromBar]).Aggregate(Math.Max);
+        FullBarCount = Context.IsLastBarUsed ? Context.BarsCount : Context.BarsCount - 1;
     }
 
     /// <summary>
@@ -156,9 +157,9 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     /// </summary>
     public IList<T> Select<T>(Func<T> func) where T : struct
     {
-        T[] result = Context.GetOrCreateArray<T>(Context.BarsCount);
+        T[] result = Context.GetOrCreateArray<T>(FullBarCount);
 
-        for (Now = TradeFromBar; Now < Context.BarsCount; Now++)
+        for (Now = TradeFromBar; Now < FullBarCount; Now++)
             result[Now] = func();
 
         return result;
@@ -184,6 +185,8 @@ public abstract class SystemBase : IHandler, IContextUses, ITradeRules, INowProv
     }
 
     private int TradeFromBar { get; set; }
+
+    private int FullBarCount { get; set; }
 
     private IAntiGap? _antiGap;
 

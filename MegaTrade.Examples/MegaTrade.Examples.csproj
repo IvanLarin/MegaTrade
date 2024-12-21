@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MegaTrade.Basic\MegaTrade.Basic.csproj" />
+    <ProjectReference Include="..\MegaTrade.Indicators\MegaTrade.Indicators.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="TSLab.DataSource">
       <HintPath>..\Dlls\TSLab.DataSource.dll</HintPath>
     </Reference>
